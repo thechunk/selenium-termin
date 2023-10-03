@@ -4,16 +4,12 @@ services:
       - grid
       - telegram
     build: ./termin
-    volumes:
-      - ./termin:/usr/src/app
     command: ruby termin.rb
     stdin_open: true
     tty: true
 
   telegram:
     build: ./telegram
-    volumes:
-      - ./telegram:/usr/src/app
     command: ruby telegram.rb
     stdin_open: true
     tty: true

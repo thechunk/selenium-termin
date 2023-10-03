@@ -13,11 +13,17 @@ module Telegram
   end
 end
 
-bot = Telegram::Bot::Client.new(ENV['TELEGRAM_BOT_TOKEN'])
+token = File.read('./telegramtoken').chomp
+bot = Telegram::Bot::Client.new(token)
 chat_ids = []
 
 web_thread = Thread.fork do
   Sinatra.new do
+    configure do
+      set :bind, '0.0.0.0'
+      set :port, '4567'
+    end
+
     get '/send' do
       puts chat_ids
       bot.api.send_message(chat_id: chat_ids[0], text: 'hi')

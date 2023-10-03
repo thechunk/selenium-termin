@@ -37,7 +37,6 @@ module LeaTermin
     end
 
     def quit
-      binding.pry
       @driver.quit
     end
   end
