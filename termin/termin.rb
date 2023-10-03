@@ -77,57 +77,59 @@ module LeaTermin
   end
 end
 
-url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
+loop do
+  url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
 
-Net::HTTP.get(URI('http://telegram:4567/send'))
+  Net::HTTP.get(URI('http://telegram:4567/send'))
 
-lea_termin_session = LeaTermin::Session.new
-lea_termin_session.delay_perform(root_url: url) do |driver|
-  book_link = driver.find_element(css: '.slide-content .link > a')
-  book_link.click
-end
-
-lea_termin_session.delay_perform do |driver|
-  agree_checkbox = driver.find_element(name: 'gelesen')
-  agree_checkbox.click
-end
-
-lea_termin_session.delay_perform do |driver|
-  next_button = driver.find_element(id: 'applicationForm:managedForm:proceed')
-  next_button.click
-end
-
-form = LeaTermin::Form.new(lea_termin_session, [
-  { type: :select, name: 'sel_staat', value: 'China' },
-  { type: :select, name: 'personenAnzahl_normal', value: 'one person' },
-  { type: :select, name: 'lebnBrMitFmly', value: 'yes' },
-  { type: :select, name: 'fmlyMemNationality', value: 'Canada' },
-  { type: :label, css: '[for="SERVICEWAHL_EN3479-0-2"]' },
-  { type: :label, css: '[for="SERVICEWAHL_EN_479-0-2-4"]' },
-  { type: :label, css: '[for="SERVICEWAHL_EN479-0-2-4-328188"]' }
-]).populate
-
-lea_termin_session.delay_perform do |driver|
-  next_button = driver.find_element(id: 'applicationForm:managedForm:proceed')
-  next_button.click
-end
-
-lea_termin_session.delay_perform do |driver|
-  no_dates_error = 'There are currently no dates available for the selected service! Please try again later.'
-  no_dates = driver.find_element(id: 'messagesBox').text == no_dates_error
-  puts 'no dates' if no_dates
-
-  date_selection_text = 'Date selection'
-  date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
-  puts 'on date_selection' if date_selection_active
-
-  if !no_dates && date_selection_active
-    Net::HTTP.get(URI('http://telegram:4567/fail'))
-  else
-    Net::HTTP.get(URI('http://telegram:4567/success'))
+  lea_termin_session = LeaTermin::Session.new
+  lea_termin_session.delay_perform(root_url: url) do |driver|
+    book_link = driver.find_element(css: '.slide-content .link > a')
+    book_link.click
   end
+
+  lea_termin_session.delay_perform do |driver|
+    agree_checkbox = driver.find_element(name: 'gelesen')
+    agree_checkbox.click
+  end
+
+  lea_termin_session.delay_perform do |driver|
+    next_button = driver.find_element(id: 'applicationForm:managedForm:proceed')
+    next_button.click
+  end
+
+  form = LeaTermin::Form.new(lea_termin_session, [
+    { type: :select, name: 'sel_staat', value: 'China' },
+    { type: :select, name: 'personenAnzahl_normal', value: 'one person' },
+    { type: :select, name: 'lebnBrMitFmly', value: 'yes' },
+    { type: :select, name: 'fmlyMemNationality', value: 'Canada' },
+    { type: :label, css: '[for="SERVICEWAHL_EN3479-0-2"]' },
+    { type: :label, css: '[for="SERVICEWAHL_EN_479-0-2-4"]' },
+    { type: :label, css: '[for="SERVICEWAHL_EN479-0-2-4-328188"]' }
+  ]).populate
+
+  lea_termin_session.delay_perform do |driver|
+    next_button = driver.find_element(id: 'applicationForm:managedForm:proceed')
+    next_button.click
+  end
+
+  lea_termin_session.delay_perform do |driver|
+    no_dates_error = 'There are currently no dates available for the selected service! Please try again later.'
+    no_dates = driver.find_element(id: 'messagesBox').text == no_dates_error
+    puts 'no dates' if no_dates
+
+    date_selection_text = 'Date selection'
+    date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
+    puts 'on date_selection' if date_selection_active
+
+    if !no_dates && date_selection_active
+      Net::HTTP.get(URI('http://telegram:4567/success'))
+    else
+      Net::HTTP.get(URI('http://telegram:4567/fail'))
+    end
+  end
+
+  lea_termin_session.quit
+
+  sleep 60 * 5
 end
-
-lea_termin_session.quit
-
-#driver.quit() if driver.current_url == 'https://otv.verwalt-berlin.de/ams/TerminBuchen/logout'
