@@ -4,8 +4,6 @@ services:
       - grid
       - telegram
     build: ./termin
-    stdin_open: false
-    tty: false
     command: ruby termin.rb
 
   telegram:
