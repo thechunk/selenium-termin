@@ -1,0 +1,28 @@
+services:
+  termin:
+    depends_on:
+      - grid
+      - telegram
+    build: ./termin
+    volumes:
+      - ./termin:/usr/src/app
+    command: ruby termin.rb
+    stdin_open: true
+    tty: true
+
+  telegram:
+    build: ./telegram
+    volumes:
+      - ./telegram:/usr/src/app
+    command: ruby telegram.rb
+    stdin_open: true
+    tty: true
+    ports:
+      - "4567:4567/tcp"
+
+  grid:
+    image: docker.io/selenium/standalone-chrome:latest
+    shm_size: '2gb'
+    ports:
+      - "4444:4444/tcp"
+      - "7900:7900/tcp"
