@@ -28,6 +28,16 @@ web_thread = Thread.fork do
       puts chat_ids
       bot.api.send_message(chat_id: chat_ids[0], text: 'hi')
     end
+
+    get '/success' do
+      puts chat_ids
+      bot.api.send_message(chat_id: chat_ids[0], text: 'success')
+    end
+
+    get '/fail' do
+      puts chat_ids
+      bot.api.send_message(chat_id: chat_ids[0], text: 'fail')
+    end
   end.run!
 end
 

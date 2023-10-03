@@ -79,6 +79,8 @@ end
 
 url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
 
+Net::HTTP.get(URI('http://telegram:4567/send'))
+
 lea_termin_session = LeaTermin::Session.new
 lea_termin_session.delay_perform(root_url: url) do |driver|
   book_link = driver.find_element(css: '.slide-content .link > a')
@@ -119,7 +121,11 @@ lea_termin_session.delay_perform do |driver|
   date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
   puts 'on date_selection' if date_selection_active
 
-  Net::HTTP.get(URI('http://telegram:4567/send'))
+  if !no_dates && date_selection_active
+    Net::HTTP.get(URI('http://telegram:4567/fail'))
+  else
+    Net::HTTP.get(URI('http://telegram:4567/success'))
+  end
 end
 
 lea_termin_session.quit
