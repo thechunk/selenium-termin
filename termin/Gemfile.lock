@@ -1,0 +1,19 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rexml (3.2.6)
+    rubyzip (2.3.2)
+    selenium-webdriver (4.13.1)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
+    websocket (1.2.10)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  selenium-webdriver
+
+BUNDLED WITH
+   2.4.10
