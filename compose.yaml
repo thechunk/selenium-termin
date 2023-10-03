@@ -5,14 +5,10 @@ services:
       - telegram
     build: ./termin
     command: ruby termin.rb
-    stdin_open: true
-    tty: true
 
   telegram:
     build: ./telegram
     command: ruby telegram.rb
-    stdin_open: true
-    tty: true
     ports:
       - "4567:4567/tcp"
 
