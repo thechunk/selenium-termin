@@ -15,7 +15,6 @@ module LeaTermin
 
       @driver = Selenium::WebDriver.for :remote, url: 'http://grid:4444', options: @options
       @driver.execute_script('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
-      @driver.manage.timeouts.implicit_wait = 10
     end
 
     def delay_perform(root_url: nil, delay: 3, &blk)
@@ -25,15 +24,14 @@ module LeaTermin
       blk.call(@driver)
     end
 
-    def wait_for_element(element, delay: 3, &blk)
+    def wait_for_element(delay: 3, timeout: 90, &blk)
       sleep(delay)
-      wait = Selenium::WebDriver::Wait.new(timeout: 30, ignore: [
+      wait = Selenium::WebDriver::Wait.new(timeout:, ignore: [
         Selenium::WebDriver::Error::StaleElementReferenceError,
         Selenium::WebDriver::Error::ElementNotInteractableError,
         Selenium::WebDriver::Error::NoSuchElementError
       ])
-      wait.until { element.displayed? }
-      blk.call(@driver)
+      wait.until(&blk)
     end
 
     def quit
@@ -70,8 +68,8 @@ module LeaTermin
 
     def populate
       @fields.each do |field|
-        element = field.element(@session.driver)
-        @session.wait_for_element(element) { |driver| field.select_value(driver) }
+        @session.wait_for_element { field.element(@session.driver).displayed? }
+        field.select_value(@session.driver)
       end
     end
   end
@@ -88,10 +86,12 @@ loop do
     book_link.click
   end
 
-  lea_termin_session.delay_perform do |driver|
-    agree_checkbox = driver.find_element(name: 'gelesen')
-    agree_checkbox.click
+  agree_checkbox = nil
+  lea_termin_session.wait_for_element do
+    agree_checkbox = lea_termin_session.driver.find_element(name: 'gelesen')
+    agree_checkbox.displayed?
   end
+  agree_checkbox.click
 
   lea_termin_session.delay_perform do |driver|
     next_button = driver.find_element(id: 'applicationForm:managedForm:proceed')
