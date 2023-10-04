@@ -1,6 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'pry'
-gem 'sinatra'
-gem 'puma'
-gem 'telegram-bot-ruby', '~> 1.0'

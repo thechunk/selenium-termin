@@ -2,15 +2,8 @@ services:
   termin:
     depends_on:
       - grid
-      - telegram
-    build: ./termin
-    command: ruby termin.rb
-
-  telegram:
-    build: ./telegram
-    command: ruby telegram.rb
-    ports:
-      - "4567:4567/tcp"
+    build: .
+    command: ruby app.rb
 
   grid:
     image: docker.io/selenium/standalone-chrome:latest
