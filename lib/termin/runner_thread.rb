@@ -1,20 +1,23 @@
-require 'net/http'
 require 'selenium-webdriver'
 
 module Termin
   module Lea
     class RunnerThread
-      def initialize(bot: nil, chat_ids: [])
+      attr_reader :session
+
+      def initialize(logger: nil, notifier: nil)
         @root_url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
-        @session = Session.new
-        @bot = bot
-        @chat_ids = chat_ids
-        puts 'http://localhost:7900/?autoconnect=1&resize=scale&password=secret'
+        @session = Session.new(logger:)
+        @notifier = notifier
+        @logger = logger
       end
 
       def call
+        vnc_url = 'http://localhost:7900/?autoconnect=1&resize=scale&password=secret'
+        @logger.debug("VNC: #{vnc_url}")
+
         Thread.fork do
-          @bot.api.send_message(chat_id: @chat_ids[0], text: 'hi') unless @chat_ids.empty?
+          @notifier.broadcast(text: 'hi')
 
           @session.delay_perform(root_url: @root_url) do |driver|
             book_link = driver.find_element(css: '.slide-content .link > a')
@@ -58,16 +61,15 @@ module Termin
             end
             no_dates_error = 'There are currently no dates available for the selected service! Please try again later.'
             no_dates = messages_box.text == no_dates_error
-            puts 'no dates' if no_dates
 
             date_selection_text = 'Date selection'
             date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
-            puts 'on date_selection' if date_selection_active
 
             if !no_dates && date_selection_active
-              @bot.api.send_message(chat_id: @chat_ids[0], text: 'success') unless @chat_ids.empty?
+              @notifier.broadcast(text: 'Appointments available')
             else
-              @bot.api.send_message(chat_id: @chat_ids[0], text: 'fail') unless @chat_ids.empty?
+              @logger.info("no_dates: #{no_dates}")
+              @logger.info("date_selection_active: #{date_selection_active}")
             end
           end
 
