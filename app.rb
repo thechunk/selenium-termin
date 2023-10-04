@@ -1,3 +1,4 @@
+$stdout.sync = true # https://stackoverflow.com/a/42344140
 require 'logger'
 Dir.glob('lib/**/*.rb').each { |f| require_relative f }
 
