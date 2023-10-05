@@ -74,8 +74,8 @@ module Termin
 
             @session.quit
           rescue Exception => e
-            logger.error("Runner failed: #{e.message}")
-            notifier.broadcast('Runner failed unexpectedly')
+            @logger.error("Runner failed: #{e.message}")
+            @notifier.broadcast('Runner failed unexpectedly')
             @session.driver.quit()
           end
         end
