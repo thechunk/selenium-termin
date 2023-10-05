@@ -11,7 +11,7 @@ bot = ::Telegram::Bot::Client.new(token)
 telegram_instance = Termin::Telegram::ListenerThread.new(logger:, bot:)
 telegram_thread = telegram_instance.call
 
-notifier = Termin::Util::Notifier.new(logger:, bot:)
+notifier = Termin::Util::Notifier.new(logger:, bot:, chat_ids: telegram_instance.chat_ids)
 
 loop do
   session = nil

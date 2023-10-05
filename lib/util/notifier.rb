@@ -1,8 +1,8 @@
 module Termin
   module Util
     class Notifier
-      def initialize(logger:, bot:)
-        @chat_ids = []
+      def initialize(logger:, bot:, chat_ids:)
+        @chat_ids = chat_ids
         @bot = bot
         @logger = logger
       end
