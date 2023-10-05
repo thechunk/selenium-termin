@@ -18,8 +18,6 @@ module Termin
 
         Thread.fork do
           begin
-            @notifier.broadcast(text: 'hi')
-
             @session.delay_perform(root_url: @root_url) do |driver|
               book_link = driver.find_element(css: '.slide-content .link > a')
               book_link.click
