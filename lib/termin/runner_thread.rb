@@ -72,11 +72,11 @@ module Termin
               end
             end
 
-            @session.quit
+            @session.quit()
           rescue Exception => e
             @logger.error("Runner failed: #{e.message}")
             @notifier.broadcast('Runner failed unexpectedly')
-            @session.driver.quit()
+            @session.quit()
           end
         end
       end
