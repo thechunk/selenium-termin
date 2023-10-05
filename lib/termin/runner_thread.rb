@@ -56,7 +56,7 @@ module Termin
 
               @session.wait_for_element do
                 messages_box = @session.driver.find_element(id: 'messagesBox')
-                messages_box.displayed?
+                messages_box.displayed? && messages_box.text.length > 0
               end
               no_dates_error = 'There are currently no dates available for the selected service! Please try again later.'
               no_dates = messages_box.text == no_dates_error
