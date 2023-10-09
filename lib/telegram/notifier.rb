@@ -1,10 +1,21 @@
 module Termin
-  module Util
+  module Telegram
     class Notifier
-      def initialize(logger:, bot:, chat_ids:)
-        @chat_ids = chat_ids
-        @bot = bot
+      def initialize(logger:, bot:, db:)
         @logger = logger
+        @bot = bot
+        @db = db
+      end
+
+      def register(chat_id)
+        begin
+          @db.schema[:telegram_chats].insert(chat_id:)
+        rescue Sequel::UniqueConstraintViolation
+          @logger.debug("Chat #{chat_id} already registered")
+        ensure
+          @bot.api.send_message(chat_id:, text: 'Registered')
+          @logger.info("Chat #{chat_id} registered")
+        end
       end
 
       def broadcast(text: '', image_path: nil)

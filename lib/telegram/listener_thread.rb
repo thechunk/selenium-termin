@@ -3,10 +3,8 @@ require 'telegram/bot'
 module Termin
   module Telegram
     class ListenerThread
-      attr_reader :bot, :chat_ids
-
-      def initialize(logger:, bot:)
-        @chat_ids = []
+      def initialize(logger:, bot:, notifier:)
+        @notifier = notifier
         @bot = bot
         @logger = logger
       end
@@ -17,9 +15,7 @@ module Termin
             bot.listen do |message|
               case message.text
               when '/start'
-                @chat_ids << message.chat.id
-                @bot.api.send_message(chat_id: message.chat.id, text: 'Registered')
-                @logger.info("Chat #{message.chat.id} registered")
+                @notifier.register(message.chat.id)
               end
             end
           end
