@@ -21,9 +21,10 @@ module Termin
         telegram_thread = telegram_instance.call
 
         loop do
-          lea_runner_instance = Termin::Lea::RunnerThread.new(logger:, notifier:)
-          lea_runner_thread = lea_runner_instance.call
-          logger.debug(lea_runner_thread)
+          session = Session::LeaExtend.new(logger:, notifier:)
+          runner = Session::RunnerThread.new(logger:, notifier:, session:)
+          runner_thread = runner.call
+          logger.debug(runner_thread)
           sleep 60 * 5
         end
       end

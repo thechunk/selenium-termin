@@ -1,33 +1,31 @@
 require 'selenium-webdriver'
 
 module Termin
-  module Lea
-    class Session
+  module Session
+    class BaseSession
       attr_reader :driver
 
       def initialize(logger: nil)
         @logger = logger
-
-        options = Selenium::WebDriver::Options.chrome
-        options.args << '--disable-blink-features=AutomationControlled'
-        options.add_emulation(user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36')
-        options.add_argument('--disable-popup-blocking')
-
-        loop do
-          begin
-            @driver = Selenium::WebDriver.for(:remote, url: 'http://grid:4444', options:)
-          rescue
-            sleep(5)
-            next
-          end
-
-          break
+        begin
+          driver = Driver.new(logger:, root_url:)
+          driver.call
+          @driver = driver.driver
+        rescue Exception => e
+          driver.driver.quit
+          @logger.debug(e.message)
         end
-        @driver.execute_script('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
       end
 
-      def delay_perform(root_url: nil, delay: 3, &blk)
-        @driver.get(root_url) unless root_url.nil?
+      def root_url
+        raise NotImplementedError
+      end
+
+      def call
+        raise NotImplementedError
+      end
+
+      def delay_perform(delay: 3, &blk)
         @logger.debug("Navigating to: #{@driver.current_url}")
         sleep(delay)
         blk.call(@driver)

@@ -1,7 +1,7 @@
 require 'selenium-webdriver'
 
 module Termin
-  module Lea
+  module Session
     class Form
       Field = Struct.new(:type, :id, :name, :css, :value) do
         def element(driver)
