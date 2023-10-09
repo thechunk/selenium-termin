@@ -5,14 +5,9 @@ module Termin
 
       def initialize(logger: nil)
         @logger = logger
-        begin
-          driver = Driver.new(logger:, root_url:)
-          @driver = driver.driver
-          driver.call
-        rescue Exception => e
-          driver.driver.quit
-          @logger.debug(e.message)
-        end
+        driver = Driver.new(logger:, root_url:)
+        @driver = driver.driver
+        driver.call
       end
 
       def root_url
