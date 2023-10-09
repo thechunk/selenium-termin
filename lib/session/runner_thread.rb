@@ -7,7 +7,6 @@ module Termin
         raise ArgumentError if session.nil?
         raise ArgumentError unless session.kind_of?(BaseSession)
 
-        @root_url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
         @session = session
         @notifier = notifier
         @logger = logger
