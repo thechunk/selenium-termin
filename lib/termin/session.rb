@@ -28,7 +28,7 @@ module Termin
 
       def delay_perform(root_url: nil, delay: 3, &blk)
         @driver.get(root_url) unless root_url.nil?
-        @logger.debug("Navigated to: #{@driver.current_url}")
+        @logger.debug("Navigating to: #{@driver.current_url}")
         sleep(delay)
         blk.call(@driver)
       end
@@ -41,6 +41,17 @@ module Termin
           Selenium::WebDriver::Error::NoSuchElementError
         ])
         wait.until(&blk)
+      end
+
+      def screenshot
+        tmp = Tempfile.new(['', '.png'])
+        path = tmp.path
+        @logger.debug("Screenshot: #{path}")
+        @driver.save_screenshot(tmp.path)
+        tmp.close
+        tmp.unlink
+
+        path
       end
 
       def quit
