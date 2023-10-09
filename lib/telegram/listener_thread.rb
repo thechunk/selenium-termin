@@ -1,5 +1,3 @@
-require 'telegram/bot'
-
 module Termin
   module Telegram
     class ListenerThread

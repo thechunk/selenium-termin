@@ -2,9 +2,15 @@ services:
   termin:
     depends_on:
       - grid
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - RUBY_ENV=production
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
+    environment:
+      - RUBY_ENV=production
     command: ruby app.rb
 
   grid:

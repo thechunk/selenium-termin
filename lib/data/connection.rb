@@ -1,5 +1,3 @@
-require 'sequel'
-
 module Termin
   module Data
     class Connection
@@ -7,7 +5,7 @@ module Termin
 
       def initialize(logger:, path:)
         @logger = logger
-        @schema = Sequel.sqlite(path)
+        @schema = Sequel.sqlite(path, loggers: [@logger])
       end
 
       def migrate

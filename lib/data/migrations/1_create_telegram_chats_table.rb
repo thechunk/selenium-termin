@@ -1,4 +1,3 @@
-require 'sequel'
 Sequel.extension(:migration)
 
 Sequel.migration do

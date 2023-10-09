@@ -1,5 +1,3 @@
-require 'selenium-webdriver'
-
 module Termin
   module Session
     class Form

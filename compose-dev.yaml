@@ -2,10 +2,16 @@ services:
   termin:
     depends_on:
       - grid
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+      args:
+        - RUBY_ENV=development
     volumes:
       - .:/usr/src/app
-    command: ruby app.rb
+    command: bash -c "bundle install && ruby app.rb"
+    environment:
+      - RUBY_ENV=development
     stdin_open: true
     tty: true
 
