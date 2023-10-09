@@ -11,10 +11,12 @@ services:
       - "./data.db:/usr/src/app/data.db:Z"
     environment:
       - RUBY_ENV=production
+    restart: always
     command: ruby app.rb
 
   grid:
     image: docker.io/selenium/standalone-chrome:latest
+    restart: always
     shm_size: '2gb'
     ports:
       - "4444:4444/tcp"
