@@ -36,9 +36,13 @@ module Termin
                 )
                 @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
               end
-            ensure
-              @session.quit()
             end
+
+            begin
+              @session.quit()
+            rescue Selenium::WebDriver::Error::ServerError
+            end
+
             sleep 60 * 5
           end
         end
