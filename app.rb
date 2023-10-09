@@ -25,13 +25,12 @@ module Termin
         telegram_instance = Telegram::ListenerThread.new(logger:, bot:, notifier:)
         telegram_thread = telegram_instance.call
 
-        loop do
-          session = Session::LeaExtend.new(logger:, notifier:)
-          runner = Session::RunnerThread.new(logger:, notifier:, session:, db:)
-          runner_thread = runner.call
-          logger.debug(runner_thread)
-          sleep 60 * 5
-        end
+        session = Session::LeaExtend.new(logger:, notifier:)
+        runner = Session::RunnerThread.new(logger:, notifier:, session:, db:)
+        runner_thread = runner.call
+        logger.debug(runner_thread)
+
+        runner_thread.join
       end
     end
   end

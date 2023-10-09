@@ -19,23 +19,28 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
 
         Thread.fork do
-          begin
-            @session.call
-          rescue Exception => e
-            @logger.error("Runner failed: #{e.message}")
-            @session.screenshot do |image_path|
-              blob = File.open(image_path, 'rb') { |file| file.read }
-              @db.schema[:run_logs].insert(
-                session_id: @session.session_id,
-                error: e.full_message,
-                page_source: @session.page_source,
-                last_url: @session.current_url,
-                last_screenshot: Sequel.blob(blob)
-              )
-              @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
+          ['INT', 'TERM'].each { |signal| Signal.trap(signal) { @session.quit() } }
+
+          loop do
+            begin
+              @session.call
+            rescue Exception => e
+              @logger.error("Runner failed: #{e.message}")
+              @session.screenshot do |image_path|
+                blob = File.open(image_path, 'rb') { |file| file.read }
+                @db.schema[:run_logs].insert(
+                  session_id: @session.session_id,
+                  error: e.full_message,
+                  page_source: @session.page_source,
+                  last_url: @session.current_url,
+                  last_screenshot: Sequel.blob(blob)
+                )
+                @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
+              end
+            ensure
+              @session.quit()
             end
-          ensure
-            @session.quit()
+            sleep 60 * 5
           end
         end
       end
