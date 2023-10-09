@@ -3,6 +3,8 @@ services:
     depends_on:
       - grid
     build: .
+    volumes:
+      - "./data.db:/usr/src/app/data.db:Z"
     command: ruby app.rb
 
   grid:
