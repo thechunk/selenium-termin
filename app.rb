@@ -3,7 +3,6 @@ $stdout.sync = true # https://stackoverflow.com/a/42344140
 require 'bundler'
 Bundler.setup(:default, ENV['RUBY_ENV'])
 Bundler.require(:default, ENV['RUBY_ENV'])
-require 'telegram/bot'
 require 'logger'
 Dir.glob('lib/**/*.rb').each { |f| require_relative f }
 

@@ -8,7 +8,7 @@ gem 'puma'
 gem 'sinatra'
 
 gem 'selenium-webdriver'
-gem 'telegram-bot-ruby', '~> 1.0'
+gem 'telegram-bot-ruby', '~> 1.0', require: 'telegram/bot'
 
 group :development do
   gem 'pry'
