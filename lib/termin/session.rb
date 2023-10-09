@@ -43,15 +43,15 @@ module Termin
         wait.until(&blk)
       end
 
-      def screenshot
+      def screenshot(&blk)
         tmp = Tempfile.new(['', '.png'])
         path = tmp.path
         @logger.debug("Screenshot: #{path}")
         @driver.save_screenshot(tmp.path)
         tmp.close
-        tmp.unlink
 
-        path
+        blk.call(path)
+        tmp.unlink
       end
 
       def quit

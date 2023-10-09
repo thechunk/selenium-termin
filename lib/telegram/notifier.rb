@@ -23,7 +23,7 @@ module Termin
 
         unless image_path.nil?
           expanded_image_path = File.expand_path(image_path)
-          photo = Faraday::UploadIO.new(expanded_image_path, 'image/jpeg')
+          photo = Faraday::UploadIO.new(expanded_image_path, 'image/png')
         end
 
         @chat_ids.each do |chat_id|
