@@ -68,8 +68,6 @@ module Termin
             @logger.info("date_selection_active: #{date_selection_active}")
           end
         end
-
-        quit()
       end
     end
   end

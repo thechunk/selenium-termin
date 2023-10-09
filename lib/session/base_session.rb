@@ -9,8 +9,8 @@ module Termin
         @logger = logger
         begin
           driver = Driver.new(logger:, root_url:)
-          driver.call
           @driver = driver.driver
+          driver.call
         rescue Exception => e
           driver.driver.quit
           @logger.debug(e.message)
