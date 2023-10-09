@@ -12,7 +12,8 @@ module Termin
     class << self
       def run
         logger = Logger.new(STDOUT)
-        logger.level = Logger::DEBUG
+        logger.level = Logger::WARN
+        logger.level = Logger::DEBUG if ENV['RUBY_ENV'] == 'development'
 
         db = Data::Connection.new(logger:, path: './data.db')
         db.migrate
