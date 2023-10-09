@@ -31,6 +31,8 @@ module Termin
         runner_thread = runner.call
         logger.debug(runner_thread)
 
+        web_instance = Web::Server.run!
+
         runner_thread.join
       end
     end

@@ -9,6 +9,8 @@ services:
         - RUBY_ENV=production
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
+    ports:
+      - "4567:4567/tcp"
     environment:
       - RUBY_ENV=production
     restart: always

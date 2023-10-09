@@ -9,6 +9,8 @@ services:
         - RUBY_ENV=development
     volumes:
       - .:/usr/src/app
+    ports:
+      - "4567:4567/tcp"
     command: bash -c "bundle install && ruby app.rb"
     environment:
       - RUBY_ENV=development

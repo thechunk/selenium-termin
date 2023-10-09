@@ -18,7 +18,12 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
 
         Thread.fork do
-          ['INT', 'TERM'].each { |signal| Signal.trap(signal) { @session.quit() } }
+          ['INT', 'TERM'].each do |signal|
+            Signal.trap(signal) do
+              @logger.warn("Terminating: #{signal}")
+              @session.quit()
+            end
+          end
 
           loop do
             begin
