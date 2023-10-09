@@ -26,12 +26,13 @@ module Termin
           photo = Faraday::UploadIO.new(expanded_image_path, 'image/png')
         end
 
-        @chat_ids.each do |chat_id|
-          @bot.api.send_message(chat_id:, text:) if image_path.nil?
-          @bot.api.send_photo(chat_id:, caption: text, photo:) unless image_path.nil?
+        chat_ids = @db.schema[:telegram_chats].all
+        chat_ids.each do |chat_id|
+          @bot.api.send_message(chat_id: chat_id[:chat_id], text:) if image_path.nil?
+          @bot.api.send_photo(chat_id: chat_id[:chat_id], caption: text, photo:) unless image_path.nil?
         end
 
-        @logger.info("Message sent to #{@chat_ids.length} chats")
+        @logger.info("Message sent to #{chat_ids.length} chats")
       end
     end
   end
