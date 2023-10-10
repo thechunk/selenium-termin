@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile-dev
       args:
-        - RUBY_ENV=development
+        - APP_ENV=development
     volumes:
       - .:/usr/src/app
     ports:
       - "4567:4567/tcp"
     command: bash -c "bundle install && ruby app.rb"
     environment:
-      - RUBY_ENV=development
+      - APP_ENV=development
     stdin_open: true
     tty: true
 

@@ -6,13 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - RUBY_ENV=production
+        - APP_ENV=production
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
     ports:
       - "4567:4567/tcp"
     environment:
-      - RUBY_ENV=production
+      - APP_ENV=production
     restart: always
     command: ruby app.rb
 

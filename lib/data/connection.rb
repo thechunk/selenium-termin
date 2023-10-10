@@ -6,7 +6,7 @@ module Termin
       def initialize(logger:, path:)
         @logger = logger
         @schema = Sequel.sqlite(path)
-        @schema.loggers << logger if ENV['RUBY_ENV'] == 'development'
+        @schema.loggers << logger if ENV['APP_ENV'] == 'development'
       end
 
       def migrate

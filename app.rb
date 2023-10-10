@@ -1,8 +1,8 @@
 $stdout.sync = true # https://stackoverflow.com/a/42344140
 
 require 'bundler'
-Bundler.setup(:default, ENV['RUBY_ENV'])
-Bundler.require(:default, ENV['RUBY_ENV'])
+Bundler.setup(:default, ENV['APP_ENV'])
+Bundler.require(:default, ENV['APP_ENV'])
 require 'logger'
 Dir.glob('lib/**/*.rb').each { |f| require_relative f }
 
@@ -12,7 +12,7 @@ module Termin
       def run
         logger = Logger.new(STDOUT)
         logger.level = Logger::WARN
-        logger.level = Logger::DEBUG if ENV['RUBY_ENV'] == 'development'
+        logger.level = Logger::DEBUG if ENV['APP_ENV'] == 'development'
 
         db = Data::Connection.new(logger:, path: './data.db')
         db.migrate
