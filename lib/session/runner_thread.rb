@@ -14,60 +14,66 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
 
         Thread.fork do
-          ['INT', 'TERM'].each do |signal|
-            Signal.trap(signal) do
-              @logger.warn("Terminating: #{signal}")
-              @driver_connection.close
-            end
-          end
+          trap_sig
 
           loop do
+            start_at = DateTime.now
+
             begin
               @driver_connection.connect
             rescue Exception => e
-              @logger.error(e.full_message)
+              @logger.error("Could not connect to Selenium: #{e.full_message}")
               next
             end
 
             run_log_id = nil
-            run_log_data = {}
+            run_log_data = {start_at:, status: 'fail'}
             
             begin
               session = @blk.call(@driver_connection)
-              run_log_data[:session_id] = session.session_id
               @driver_connection.open(session.root_url)
               session.call
             rescue Exception => e
               @logger.error("Runner failed: #{e.full_message}")
               run_log_data[:error] = e.full_message
+              run_log_data[:status] = 'error'
+            ensure
+              run_log_data = run_log_data.merge!(
+                session_id: session.session_id,
+                page_source: session.page_source,
+                last_url: session.current_url,
+                end_at: DateTime.now
+              )
             end
 
             begin
               session.screenshot do |image_path|
                 blob = File.open(image_path, 'rb') { |file| file.read }
-                
-                run_log_data.merge!(
-                  page_source: session.page_source,
-                  last_url: session.current_url,
-                  last_screenshot: Sequel.blob(blob)
-                )
+                run_log_data[:last_screenshot] = Sequel.blob(blob)
                 
                 @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:) if run_log_data.key?(:error)
               end
-              run_log_id = @db.schema[:run_logs].insert(run_log_data)
             rescue Exception => e
               @logger.error("Diagnostic capture failed: #{e.full_message}")
+            ensure
+              run_log_id = @db.schema[:run_logs].insert(run_log_data)
             end
 
             @driver_connection.close
-            sleep 60 * 0.5
+            sleep 60 * 5
           end
         end
       end
 
       private
 
-      def record_run(session)
+      def trap_sig
+        ['INT', 'TERM'].each do |signal|
+          Signal.trap(signal) do
+            @logger.warn("Terminating: #{signal}")
+            @driver_connection.close
+          end
+        end
       end
     end
   end
