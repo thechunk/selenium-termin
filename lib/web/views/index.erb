@@ -1,0 +1,18 @@
+<table>
+  <tr>
+    <th>session_id</th>
+    <th>last_url</th>
+    <th>start_at</th>
+    <th>end_at</th>
+    <th>status</th>
+  </tr>
+<% @run_logs.each do |log| %>
+  <tr>
+    <td><%= log[:session_id] %></td>
+    <td><%= log[:last_url] %></td>
+    <td><%= log[:start_at] %></td>
+    <td><%= log[:end_at] %></td>
+    <td><%= log[:status] %></td>
+  </tr>
+<% end %>
+</table>

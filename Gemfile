@@ -5,7 +5,7 @@ gem 'sequel'
 gem 'sqlite3'
 
 gem 'puma'
-gem 'sinatra'
+gem 'sinatra', require: 'sinatra/base'
 
 gem 'selenium-webdriver'
 gem 'telegram-bot-ruby', '~> 1.0', require: 'telegram/bot'

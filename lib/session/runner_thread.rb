@@ -14,7 +14,12 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
 
         Thread.fork do
-          trap_sig
+          ['INT', 'TERM'].each do |signal|
+            Signal.trap(signal) do
+              @logger.warn("Terminating: #{signal}")
+              @driver_connection.close
+            end
+          end
 
           loop do
             start_at = DateTime.now
@@ -68,12 +73,6 @@ module Termin
       private
 
       def trap_sig
-        ['INT', 'TERM'].each do |signal|
-          Signal.trap(signal) do
-            @logger.warn("Terminating: #{signal}")
-            @driver_connection.close
-          end
-        end
       end
     end
   end

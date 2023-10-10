@@ -3,10 +3,10 @@ module Termin
     class Connection
       attr_reader :schema
 
-      def initialize(logger:, path:)
-        @logger = logger
+      def initialize(logger:, path:, debug: false)
+        @logger = logger unless logger.nil?
         @schema = Sequel.sqlite(path)
-        @schema.loggers << logger if ENV['APP_ENV'] == 'development'
+        @schema.loggers << logger if debug
       end
 
       def migrate
