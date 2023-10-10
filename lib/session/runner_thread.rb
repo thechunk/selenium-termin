@@ -26,26 +26,38 @@ module Termin
           end
 
           loop do
+            run_log = nil
+            
             begin
               @session.call
+              sleep 60 * 5
+              next
             rescue Exception => e
-              @logger.error("Runner failed: #{e.message}")
-              @session.screenshot do |image_path|
-                blob = File.open(image_path, 'rb') { |file| file.read }
-                @db.schema[:run_logs].insert(
-                  session_id: @session.session_id,
-                  error: e.full_message,
-                  page_source: @session.page_source,
-                  last_url: @session.current_url,
-                  last_screenshot: Sequel.blob(blob)
-                )
-                @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
-              end
+              @logger.error("Runner failed: #{e.full_message}")
+              run_log = @db.schema[:run_logs].insert(
+                session_id: @session.session_id,
+                error: e.full_message,
+              )
             end
 
             begin
-              @session.quit()
-            rescue Selenium::WebDriver::Error::ServerError
+              @session.screenshot do |image_path|
+                blob = File.open(image_path, 'rb') { |file| file.read }
+                
+                run_log.update(
+                  page_source: @session.page_source,
+                  last_url: @session.current_url,
+                  last_screenshot: Sequel.blob(blob)
+                ) unless run_log.nil?
+                
+                @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
+              end
+              
+              @session.quit
+            rescue Selenium::WebDriver::Error::ServerError => e
+              @logger.error("Server went away: #{e.message}")
+            rescue Exception => e
+              @logger.error("Diagnostic capture failed: #{e.full_message}")
             end
 
             sleep 60 * 5
