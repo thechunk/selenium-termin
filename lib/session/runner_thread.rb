@@ -3,14 +3,13 @@ module Termin
     class RunnerThread
       attr_reader :session
 
-      def initialize(logger: nil, notifier: nil, session: nil, db: nil)
-        raise ArgumentError if session.nil?
-        raise ArgumentError unless session.kind_of?(BaseSession)
-
-        @session = session
-        @notifier = notifier
+      def initialize(logger: nil, notifier: nil, driver_connection: nil, db: nil, &blk)
         @logger = logger
+        @notifier = notifier
+        @session = session
+        @driver_connection = driver_connection
         @db = db
+        @blk = blk
       end
 
       def call
@@ -26,15 +25,24 @@ module Termin
           end
 
           loop do
-            run_log = nil
+            begin
+              @driver_connection.connect
+            rescue Exception => e
+              @logger.error(e.full_message)
+              next
+            end
+            run_log_id = nil
             
             begin
+              @session = @blk.call(@driver_connection)
+              @driver_connection.open(@session.root_url)
               @session.call
+              @driver_connection.close
               sleep 60 * 5
               next
             rescue Exception => e
               @logger.error("Runner failed: #{e.full_message}")
-              run_log = @db.schema[:run_logs].insert(
+              run_log_id = @db.schema[:run_logs].insert(
                 session_id: @session.session_id,
                 error: e.full_message,
               )
@@ -44,22 +52,21 @@ module Termin
               @session.screenshot do |image_path|
                 blob = File.open(image_path, 'rb') { |file| file.read }
                 
-                run_log.update(
+                @db.schema[:run_logs].where(id: run_log_id).update(
                   page_source: @session.page_source,
                   last_url: @session.current_url,
                   last_screenshot: Sequel.blob(blob)
-                ) unless run_log.nil?
+                ) unless run_log_id.nil?
                 
                 @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:)
               end
-              
-              @session.quit
             rescue Selenium::WebDriver::Error::ServerError => e
               @logger.error("Server went away: #{e.message}")
             rescue Exception => e
               @logger.error("Diagnostic capture failed: #{e.full_message}")
             end
 
+            @driver_connection.close
             sleep 60 * 5
           end
         end

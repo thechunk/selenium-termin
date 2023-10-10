@@ -3,11 +3,9 @@ module Termin
     class BaseSession
       attr_reader :driver
 
-      def initialize(logger: nil)
+      def initialize(logger: nil, driver: nil)
         @logger = logger
-        driver = Driver.new(logger:, root_url:)
-        @driver = driver.driver
-        driver.call
+        @driver = driver
       end
 
       def root_url

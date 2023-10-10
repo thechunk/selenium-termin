@@ -1,8 +1,8 @@
 module Termin
   module Session
     class LeaExtend < BaseSession
-      def initialize(logger: nil, notifier: nil)
-        super(logger:)
+      def initialize(logger: nil, notifier: nil, driver: nil)
+        super(logger:, driver:)
 
         @notifier = notifier
         @logger = logger

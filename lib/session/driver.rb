@@ -1,18 +1,20 @@
 module Termin
   module Session
-    class Driver
+    class DriverConnection
       attr_reader :driver
 
-      def initialize(logger:nil, root_url: nil)
+      def initialize(logger: nil)
         @options = Selenium::WebDriver::Options.chrome
         @options.args << '--disable-blink-features=AutomationControlled'
         @options.add_emulation(user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36')
         @options.add_argument('--disable-popup-blocking')
 
         @logger = logger
-        @root_url = root_url
 
         @driver = nil
+      end
+
+      def connect
         retries = 10
 
         for i in 0..retries
@@ -33,9 +35,13 @@ module Termin
         raise "Failed to connect" if @driver.nil?
       end
 
-      def call
+      def open(url)
         @driver.execute_script('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
-        @driver.get(@root_url)
+        @driver.get(url)
+      end
+
+      def close
+        @driver.quit()
       end
     end
   end
