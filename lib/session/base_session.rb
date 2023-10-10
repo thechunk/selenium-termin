@@ -22,7 +22,7 @@ module Termin
         blk.call(@driver)
       end
 
-      def wait_for_element(delay: 3, timeout: 90, &blk)
+      def wait_for_element(delay: 3, timeout: 30, &blk)
         sleep(delay)
         wait = Selenium::WebDriver::Wait.new(timeout:, ignore: [
           Selenium::WebDriver::Error::StaleElementReferenceError,

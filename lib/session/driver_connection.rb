@@ -33,6 +33,8 @@ module Termin
         end
 
         raise "Failed to connect" if @driver.nil?
+
+        @logger.debug("Connected to Selenium: #{url}")
       end
 
       def open(url)

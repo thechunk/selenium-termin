@@ -25,8 +25,7 @@ module Termin
         telegram_instance = Telegram::ListenerThread.new(logger:, bot:, notifier:)
         telegram_thread = telegram_instance.call
 
-        driver_connection = Session::DriverConnection.new(logger:)
-        runner = Session::RunnerThread.new(logger:, notifier:, driver_connection:, db:) do |driver_connection|
+        runner = Session::RunnerThread.new(logger:, notifier:, db:) do |driver_connection|
           Session::LeaExtend.new(logger:, notifier:, driver: driver_connection.driver)
         end
         runner_thread = runner.call
