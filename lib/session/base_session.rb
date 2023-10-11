@@ -32,17 +32,6 @@ module Termin
         wait.until(&blk)
       end
 
-      def screenshot(&blk)
-        tmp = Tempfile.new(['', '.png'])
-        path = tmp.path
-        @logger.debug("Screenshot: #{path}")
-        @driver.save_screenshot(tmp.path)
-        tmp.close
-
-        blk.call(path)
-        tmp.unlink
-      end
-
       def method_missing(method_name, *args, &block)
         if @driver.respond_to?(method_name)
           @driver.send(method_name, *args, &block)

@@ -13,6 +13,11 @@ module Termin
             @run_logs = settings.db.schema[:run_logs].reverse_order(:id).limit(100).all
             erb :index
           end
+
+          get '/run/:run_log_id' do
+            @log = settings.db.schema[:run_logs].where(id: params['run_log_id']).first
+            erb :run
+          end
         end
 
         @server.run!

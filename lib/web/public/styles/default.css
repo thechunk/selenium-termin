@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+}
+
+td > img {
+  display: block;
+  margin: 0 auto;
+  width: 90vw;
+}
+
+pre {
+  display: block;
+  margin: 0 auto;
+  width: 90vw;
+  max-height: 30vh;
+  overflow: scroll;
+}
+
+iframe {
+  display: block;
+  margin: 0 auto;
+  width: 90vw;
+  height: 70vh;
+  overflow: scroll;
+}

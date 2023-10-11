@@ -1,0 +1,73 @@
+<table>
+  <tr>
+    <th>session_id</td>
+    <td><%= @log[:session_id] %></td>
+  </tr>
+  <tr>
+    <th>last_url</td>
+    <td><%= @log[:last_url] %></td>
+  </tr>
+  <tr>
+    <th>start_at</td>
+    <td><%= @log[:start_at] %></td>
+  </tr>
+  <tr>
+    <th>end_at</td>
+    <td><%= @log[:end_at] %></td>
+  </tr>
+  <tr>
+    <th>status</td>
+    <td><%= @log[:status] %></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th>console_events</th>
+  </tr>
+  <tr>
+    <td>
+      <pre><%= @log[:console_events] %></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <th>network_events</th>
+  </tr>
+  <tr>
+    <td>
+      <pre><%= @log[:network_events] %></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <th>driver_events</th>
+  </tr>
+  <tr>
+    <td>
+      <pre><%= @log[:driver_events] %></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <th>last_screenshot</th>
+  </tr>
+  <tr>
+    <td>
+      <% unless @log[:last_screenshot].nil? %>
+        <img src="data:image/png;base64,<%= Base64.encode64(@log[:last_screenshot]) %>" />
+      <% end %>
+    </td>
+  </tr>
+
+  <tr>
+    <th>page_source</th>
+  </tr>
+  <tr>
+    <td>
+      <% unless @log[:page_source].empty? %>
+        <iframe srcdoc="<%= CGI.escapeHTML(@log[:page_source]) %>"></iframe>
+      <% end %>
+    </td>
+  </tr>
+  
+</table>

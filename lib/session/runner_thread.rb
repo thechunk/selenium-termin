@@ -42,37 +42,33 @@ module Termin
               @logger.error("Runner failed: #{e.full_message}")
               run_log_data[:error] = e.full_message
               run_log_data[:status] = 'error'
+
             ensure
-              run_log_data = run_log_data.merge!(
+              console_events, network_events, driver_events = @driver_connection.logs.map do |entries|
+                entries.join("\n") 
+              end
+
+              run_log_id = @db.schema[:run_logs].insert(run_log_data.merge(
                 session_id: session.session_id,
                 page_source: session.page_source,
+                console_events:,
+                network_events:,
+                driver_events:,
                 last_url: session.current_url,
+                last_screenshot: Sequel.blob(@driver_connection.screenshot_blob),
                 end_at: DateTime.now
-              )
-            end
+              ))
 
-            begin
-              session.screenshot do |image_path|
-                blob = File.open(image_path, 'rb') { |file| file.read }
-                run_log_data[:last_screenshot] = Sequel.blob(blob)
-                
-                @notifier.broadcast(text: 'Runner failed unexpectedly', image_path:) if run_log_data.key?(:error)
+              if run_log_data.key?(:error)
+                @notifier.broadcast(text: "Runner failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
               end
-            rescue Exception => e
-              @logger.error("Diagnostic capture failed: #{e.full_message}")
-            ensure
-              run_log_id = @db.schema[:run_logs].insert(run_log_data)
+
+              @driver_connection.close
             end
 
-            @driver_connection.close
             sleep 60 * 5
           end
         end
-      end
-
-      private
-
-      def trap_sig
       end
     end
   end
