@@ -39,8 +39,12 @@ module Termin
               @driver_connection.open(session.root_url)
               session.call
               run_log_data[:status] = 'success'
+            rescue RunFailError => e
+            @logger.error("Runner failed: #{e.full_message}")
+              run_log_data[:error] = e.full_message
+              run_log_data[:status] = 'fail'
             rescue Exception => e
-              @logger.error("Runner failed: #{e.full_message}")
+              @logger.error("Unexpected error: #{e.full_message}")
               run_log_data[:error] = e.full_message
               run_log_data[:status] = 'error'
 

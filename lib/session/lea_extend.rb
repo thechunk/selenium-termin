@@ -59,6 +59,8 @@ module Termin
           date_selection_text = 'Date selection'
           date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
 
+          raise RunFailError.new(no_dates_error) if no_dates
+
           begin
             wait_for_element do
               appointment_selection_fieldset = driver.find_element(id: 'xi-fs-2')
