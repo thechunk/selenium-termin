@@ -59,11 +59,19 @@ module Termin
           date_selection_text = 'Date selection'
           date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
 
-          if !no_dates && date_selection_active
+          begin
+            wait_for_element do
+              appointment_selection_fieldset = driver.find_element(id: 'xi-fs-2')
+              appointment_selection_fieldset.displayed?
+            end
+
             @notifier.broadcast(text: 'Appointments available')
-          else
+          rescue Selenium::WebDriver::Error::TimeoutError => e
+            @logger.info("messages_box: #{messages_box}")
             @logger.info("no_dates: #{no_dates}")
             @logger.info("date_selection_active: #{date_selection_active}")
+
+            raise
           end
         end
       end

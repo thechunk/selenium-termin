@@ -38,6 +38,7 @@ module Termin
               session = @blk.call(@driver_connection)
               @driver_connection.open(session.root_url)
               session.call
+              run_log_data[:status] = 'success'
             rescue Exception => e
               @logger.error("Runner failed: #{e.full_message}")
               run_log_data[:error] = e.full_message
