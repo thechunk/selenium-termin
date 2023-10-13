@@ -37,7 +37,7 @@ module Termin
           { type: :select, name: 'fmlyMemNationality', value: 'Canada' },
           { type: :label, css: '[for="SERVICEWAHL_EN3479-0-2"]' },
           { type: :label, css: '[for="SERVICEWAHL_EN_479-0-2-4"]' },
-          { type: :label, css: '[for="SERVICEWAHL_EN479-0-2-4-328188"]' }
+          { type: :label, css: '[for="SERVICEWAHL_EN479-0-2-4-305289"]' }
         ]).populate
 
         delay_perform do |driver|
