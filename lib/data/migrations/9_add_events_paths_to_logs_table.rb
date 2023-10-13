@@ -6,8 +6,9 @@ Sequel.migration do
 
     [:page_source, :console_events, :network_events, :driver_events]
       .each do |col|
+        current_cols = from(:run_logs).columns
         new_col = "#{col.to_s}_path".to_sym
-        add_column(:run_logs, new_col, String)
+        add_column(:run_logs, new_col, String) unless current_cols.include?(new_col)
 
         where = {}
         where[new_col] = nil
