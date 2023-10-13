@@ -45,7 +45,7 @@ module Termin
               session.call
               run_log_data[:status] = 'success'
             rescue RunFailError => e
-            @logger.error("Runner failed: #{e.full_message}")
+              @logger.error("Runner failed: #{e.full_message}")
               run_log_data[:error] = e.full_message
               run_log_data[:status] = 'fail'
             rescue Exception => e
@@ -54,25 +54,25 @@ module Termin
               run_log_data[:status] = 'error'
 
             ensure
-              console_events, network_events, driver_events = @driver_connection.logs.map do |entries|
-                entries.join("\n") 
-              end
-
               session_id = session.session_id
-              log_data_path = "#{@log_data_path}/#{session_id}"
-              rel_data_path = "logs/#{session_id}"
 
-              Dir.mkdir(log_data_path) unless Dir.exist?(log_data_path)
-              screenshot_file = @driver_connection.screenshot(path: "#{log_data_path}/last_screenshot.png")
+              @driver_connection.logs.each do |key, entries|
+                log_type = case key
+                           when :browser then :console_events
+                           when :performance then :network_events
+                           when :driver then :driver_events
+                           end
+
+                run_log_data["#{log_type}_path"] = write_log_text(session_id, log_type) { |f| f << entries.join("\n") }
+              end
 
               run_log_id = @db.schema[:run_logs].insert(run_log_data.merge(
                 session_id:,
-                page_source: session.page_source,
-                console_events:,
-                network_events:,
-                driver_events:,
+                page_source_path: write_log_text(session_id, :page_source) { |f| f << session.page_source },
+                last_screenshot_path: write_log_file(session_id, :last_screenshot, ext: 'png') do |log_data_path|
+                  @driver_connection.screenshot(path: "#{log_data_path}/last_screenshot.png")
+                end,
                 last_url: session.current_url,
-                last_screenshot_path: "#{rel_data_path}/last_screenshot.png",
                 end_at: DateTime.now
               ))
 
@@ -86,6 +86,25 @@ module Termin
             sleep 60 * 5
           end
         end
+      end
+
+      private
+
+      def write_log_file(session_id, type, ext: '', &blk)
+        log_data_path = "#{@log_data_path}/#{session_id}"
+        rel_data_path = "logs/#{session_id}"
+        ext = ".#{ext}" unless ext.empty?
+
+        Dir.mkdir(log_data_path) unless Dir.exist?(log_data_path)
+        blk.call(log_data_path)
+
+        "#{rel_data_path}/#{type.to_s}#{ext}"
+      end
+
+      def write_log_text(session_id, type, ext: '', &blk)
+        ext = ".#{ext}" unless ext.empty?
+
+        write_log_file(session_id, type, ext:) { |log_data_path| File.open("#{log_data_path}/#{type.to_s}#{ext}", 'w', &blk) }
       end
     end
   end

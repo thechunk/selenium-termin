@@ -45,8 +45,8 @@ module Termin
 
       def logs
         [:browser, :performance, :driver].map do |type|
-          @driver.logs.get(type)
-        end
+          [type, @driver.logs.get(type)]
+        end.to_h
       end
 
       def screenshot(path:)

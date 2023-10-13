@@ -1,25 +1,39 @@
 <table>
-  <tr>
-    <th>session_id</td>
-    <td><%= @log[:session_id] %></td>
-  </tr>
-  <tr>
-    <th>last_url</td>
-    <td><%= @log[:last_url] %></td>
-  </tr>
-  <tr>
-    <th>start_at</td>
-    <td><%= @log[:start_at] %></td>
-  </tr>
-  <tr>
-    <th>end_at</td>
-    <td><%= @log[:end_at] %></td>
-  </tr>
-  <tr>
-    <th>status</td>
-    <td><%= @log[:status] %></td>
-  </tr>
+  <tbody>
+    <tr>
+      <th>session_id</td>
+      <td><%= @log[:session_id] %></td>
+    </tr>
+    <tr>
+      <th>last_url</td>
+      <td><%= @log[:last_url] %></td>
+    </tr>
+    <tr>
+      <th>start_at</td>
+      <td><%= @log[:start_at] %></td>
+    </tr>
+    <tr>
+      <th>end_at</td>
+      <td><%= @log[:end_at] %></td>
+    </tr>
+    <tr>
+      <th>status</td>
+      <td><%= @log[:status] %></td>
+    </tr>
+
+    <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
+      <tr>
+        <th><%= log_type %></th>
+        <td>
+          <% unless @log["#{log_type}_path".to_sym].nil? %>
+            <a href="/<%= @log["#{log_type}_path".to_sym] %>">download</a>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
+
 <table>
   <tr>
     <th>error</th>
@@ -27,33 +41,6 @@
   <tr>
     <td>
       <pre><%= @log[:error] %></pre>
-    </td>
-  </tr>
-
-  <tr>
-    <th>console_events</th>
-  </tr>
-  <tr>
-    <td>
-      <pre><%= @log[:console_events] %></pre>
-    </td>
-  </tr>
-
-  <tr>
-    <th>network_events</th>
-  </tr>
-  <tr>
-    <td>
-      <pre><%= @log[:network_events] %></pre>
-    </td>
-  </tr>
-
-  <tr>
-    <th>driver_events</th>
-  </tr>
-  <tr>
-    <td>
-      <pre><%= @log[:driver_events] %></pre>
     </td>
   </tr>
 
@@ -73,8 +60,11 @@
   </tr>
   <tr>
     <td>
-      <% unless @log[:page_source].empty? %>
-        <iframe srcdoc="<%= CGI.escapeHTML(@log[:page_source]) %>"></iframe>
+      <%= "#{Dir.pwd}/lib/web/public/#{@log[:page_source_path]}" %>
+      <% unless @log[:page_source_path].nil? %>
+        <% File.open("#{Dir.pwd}/lib/web/public/#{@log[:page_source_path]}", 'r') do |f| %>
+          <iframe srcdoc="<% f.each_line do |l| %><%= CGI.escapeHTML(l) %><% end %>"></iframe>
+        <% end %>
       <% end %>
     </td>
   </tr>
