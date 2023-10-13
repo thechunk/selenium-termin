@@ -57,3 +57,6 @@ build-iPhoneSimulator/
 
 telegramtoken
 data.db
+.DS_Store
+lib/web/public/logs/*
+!lib/web/public/logs/.gitkeep

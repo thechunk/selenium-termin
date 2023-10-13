@@ -62,8 +62,8 @@
   </tr>
   <tr>
     <td>
-      <% unless @log[:last_screenshot].nil? %>
-        <img src="data:image/png;base64,<%= Base64.encode64(@log[:last_screenshot]) %>" />
+      <% unless @log[:last_screenshot_path].nil? %>
+        <img src="/<%= @log[:last_screenshot_path] %>" />
       <% end %>
     </td>
   </tr>

@@ -49,8 +49,8 @@ module Termin
         end
       end
 
-      def screenshot_blob
-        Base64.decode64(@driver.screenshot_as(:base64))
+      def screenshot(path:)
+        @driver.save_screenshot(path)
       end
 
       def close
