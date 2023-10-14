@@ -33,34 +33,27 @@ module Termin
           { css: '[for="SERVICEWAHL_EN479-0-2-4-305289"]' }
         ]).populate
 
+        loading_wait
         click(id: 'applicationForm:managedForm:proceed')
 
-        delay_perform do |driver|
-          no_dates = false
-          messages_box = nil
-
+        loading_wait
+        begin
           messages_box = wait_for_element(id: 'messagesBox') do |element|
             element.displayed? && element.text.length > 0
           end
           no_dates_error = 'There are currently no dates available for the selected service! Please try again later.'
           no_dates = messages_box.text == no_dates_error
 
-          date_selection_text = 'Date selection'
-          date_selection_active = driver.find_element(class: 'antcl_active').text == date_selection_text
-
           raise RunFailError.new(no_dates_error) if no_dates
 
-          begin
-            wait_for_element(id: 'xi-fs-2')
+          wait_for_element(id: 'xi-fs-2')
 
-            @notifier.broadcast(text: 'Appointments available')
-          rescue Selenium::WebDriver::Error::TimeoutError => e
-            @logger.info("messages_box: #{messages_box}")
-            @logger.info("no_dates: #{no_dates}")
-            @logger.info("date_selection_active: #{date_selection_active}")
+          @notifier.broadcast(text: 'Appointments available')
+        rescue Selenium::WebDriver::Error::TimeoutError => e
+          @logger.info("messages_box: #{messages_box}")
+          @logger.info("no_dates: #{no_dates}")
 
-            raise
-          end
+          raise
         end
       end
     end

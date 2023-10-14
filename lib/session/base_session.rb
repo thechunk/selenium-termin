@@ -30,7 +30,7 @@ module Termin
       def loading_wait(timeout: LOADING_TIMEOUT)
         @logger.debug("Document loading...")
 
-        wait_for_element(delay: 0, timeout:, css: 'body > .loading') do |element|
+        wait_for_element(timeout:, css: 'body > .loading') do |element|
           !element.displayed?
         end
       end
