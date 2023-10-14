@@ -1,6 +1,6 @@
 <div class="controls">
   <form method="get">
-    <select name="type">
+    <select name="type" onchange="this.form.submit()">
       <option value="">All</option>
       <% @run_types.each do |run_type| %>
         <option value="<%= run_type %>" <% if params['type'] == run_type %>selected<% end %>><%= run_type %></option>
@@ -11,20 +11,25 @@
 </div>
 
 <table>
-  <tr>
-    <th>session_id</th>
-    <th>start_at</th>
-    <th>duration (s)</th>
-    <th>type</th>
-    <th>status</th>
-  </tr>
-  <% @run_logs.each do |log| %>
+  <thead>
     <tr>
-      <td><a href="<%= url("/run/#{log[:id]}") %>"><%= log[:session_id] %></a></td>
-      <td><%= log[:start_at].strftime('%F %H:%M')  %></td>
-      <td><%= (log[:end_at] - log[:start_at]).round(2) %></td>
-      <td><%= log[:type] %></td>
-      <td><%= log[:status] %></td>
+      <th>session_id</th>
+      <th>start_at</th>
+      <th>duration (s)</th>
+      <th>type</th>
+      <th>status</th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @run_logs.each_index do |i| %>
+      <% log = @run_logs[i] %>
+      <tr class="<% if i % 2 == 0 %>even<% end %>">
+        <td><a href="<%= url("/run/#{log[:id]}") %>"><%= log[:session_id] %></a></td>
+        <td><%= log[:start_at].strftime('%F %H:%M')  %></td>
+        <td><%= (log[:end_at] - log[:start_at]).round(2) %></td>
+        <td><%= log[:type] %></td>
+        <td><%= log[:status] %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

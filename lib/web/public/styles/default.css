@@ -3,8 +3,26 @@
   padding: 0;
 }
 
+body {
+  font-family: sans-serif;
+}
+
 table {
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
+  border-spacing: 0;
+}
+
+tr.even {
+  background: whitesmoke;
+}
+
+th, td {
+  padding: 0.2em 0.5em;
+}
+
+thead > tr > th {
+  border-bottom: 1px solid silver;
 }
 
 td > img {
@@ -30,6 +48,7 @@ iframe {
 }
 
 .controls {
+  display: block;
   text-align: center;
   padding: 1em;
 }
