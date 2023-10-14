@@ -22,15 +22,8 @@ module Termin
 
         notifier = Telegram::Notifier.new(logger:, bot:, db:)
 
-        telegram_instance = Telegram::ListenerThread.new(logger:, bot:, notifier:)
-        telegram_thread = telegram_instance.call
-
-        runner = Session::RunnerThread.new(logger:, notifier:, db:) do |driver_connection|
-          Session::LeaExtend.new(logger:, notifier:, driver: driver_connection.driver)
-        end
-        runner_thread = runner.call
-        logger.debug(runner_thread)
-
+        Telegram::ListenerThread.new(logger:, bot:, notifier:).call
+        runner = Session::RunnerThread.new(logger:, notifier:, db:).call
         web_instance = Web::Server.new(db:)
 
         runner_thread.join

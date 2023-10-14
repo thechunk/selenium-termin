@@ -10,6 +10,8 @@ module Termin
         @db = db
         @blk = blk
 
+        @lock = Mutex.new
+
         @log_data_path = "#{File.expand_path(Dir.pwd)}/lib/web/public/logs"
       end
 
@@ -18,6 +20,20 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
         @logger.debug("log_data_path: #{@log_data_path}")
 
+        @threads = []
+
+        @threads << thread do |driver_connection|
+          Session::LeaExtend.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
+        end
+
+        @threads << thread do |driver_connection|
+          Session::LeaTransfer.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
+        end
+
+        @threads.each { |t| t.join }
+      end
+
+      def thread(&blk)
         Thread.fork do
           ['INT', 'TERM'].each do |signal|
             Signal.trap(signal) do
@@ -27,64 +43,71 @@ module Termin
           end
 
           loop do
-            start_at = DateTime.now
+            @logger.debug("Loop start")
 
-            begin
-              @driver_connection.connect
-            rescue Exception => e
-              @logger.error("Could not connect to Selenium: #{e.full_message}")
-              next
-            end
+            @lock.synchronize {
+              @logger.debug("Lock acquired")
+              start_at = DateTime.now
 
-            run_log_id = nil
-            run_log_data = {start_at:, status: 'fail'}
-            
-            begin
-              session = @blk.call(@driver_connection)
-              run_log_data[:type] = session.class.to_s.split('::').last
-              @driver_connection.open(session.root_url)
-              session.call
-              run_log_data[:status] = 'success'
-            rescue RunFailError => e
-              @logger.error("Runner failed: #{e.full_message}")
-              run_log_data[:error] = e.full_message
-              run_log_data[:status] = 'fail'
-            rescue Exception => e
-              @logger.error("Unexpected error: #{e.full_message}")
-              run_log_data[:error] = e.full_message
-              run_log_data[:status] = 'error'
-
-            ensure
-              session_id = @driver_connection.session_id
-
-              @driver_connection.logs.each do |key, entries|
-                log_type = case key
-                           when :browser then :console_events
-                           when :performance then :network_events
-                           when :driver then :driver_events
-                           end
-
-                run_log_data["#{log_type}_path"] = write_log_text(session_id, log_type) { |f| f << entries.join("\n") }
+              begin
+                @driver_connection.connect
+              rescue Exception => e
+                @logger.error("Could not connect to Selenium: #{e.full_message}")
+                next
               end
 
-              run_log_id = @db.schema[:run_logs].insert(run_log_data.merge(
-                session_id:,
-                page_source_path: write_log_text(session_id, :page_source) { |f| f << @driver_connection.page_source },
-                last_screenshot_path: write_log_file(session_id, :last_screenshot, ext: 'png') do |log_data_path|
-                  @driver_connection.screenshot(path: "#{log_data_path}/last_screenshot.png")
-                end,
-                last_url: @driver_connection.current_url,
-                end_at: DateTime.now
-              ))
+              run_log_id = nil
+              run_log_data = {start_at:, status: 'fail'}
 
-              if run_log_data.key?(:error)
-                @notifier.broadcast(text: "Runner failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
+              begin
+                session = blk.call(@driver_connection)
+                run_log_data[:type] = session.class.to_s.split('::').last
+                @logger.debug("Run starting: #{run_log_data[:type]}")
+                @driver_connection.open(session.root_url)
+                session.call
+                run_log_data[:status] = 'success'
+              rescue RunFailError => e
+                @logger.error("Runner failed: #{e.full_message}")
+                run_log_data[:error] = e.full_message
+                run_log_data[:status] = 'fail'
+              rescue Exception => e
+                @logger.error("Unexpected error: #{e.full_message}")
+                run_log_data[:error] = e.full_message
+                run_log_data[:status] = 'error'
+
+              ensure
+                session_id = @driver_connection.session_id
+
+                @driver_connection.logs.each do |key, entries|
+                  log_type = case key
+                             when :browser then :console_events
+                             when :performance then :network_events
+                             when :driver then :driver_events
+                             end
+
+                  run_log_data["#{log_type}_path"] = write_log_text(session_id, log_type) { |f| f << entries.join("\n") }
+                end
+
+                run_log_id = @db.schema[:run_logs].insert(run_log_data.merge(
+                  session_id:,
+                  page_source_path: write_log_text(session_id, :page_source) { |f| f << @driver_connection.page_source },
+                  last_screenshot_path: write_log_file(session_id, :last_screenshot, ext: 'png') do |log_data_path|
+                    @driver_connection.screenshot(path: "#{log_data_path}/last_screenshot.png")
+                  end,
+                  last_url: @driver_connection.current_url,
+                  end_at: DateTime.now
+                ))
+
+                if run_log_data.key?(:error)
+                  @notifier.broadcast(text: "Runner failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
+                end
+
+                @driver_connection.close
               end
 
-              @driver_connection.close
-            end
+            }
 
-            sleep 60 * 5
+            sleep 60 * 3
           end
         end
       end
