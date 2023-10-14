@@ -14,6 +14,7 @@ services:
     command: bash -c "bundle install && ruby app.rb"
     environment:
       - APP_ENV=development
+      - TZ=Europe/Berlin
     stdin_open: true
     tty: true
 

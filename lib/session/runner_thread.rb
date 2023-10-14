@@ -41,6 +41,7 @@ module Termin
             
             begin
               session = @blk.call(@driver_connection)
+              run_log_data[:type] = session.class.to_s.split('::').last
               @driver_connection.open(session.root_url)
               session.call
               run_log_data[:status] = 'success'
