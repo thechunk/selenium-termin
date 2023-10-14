@@ -54,7 +54,7 @@ module Termin
               run_log_data[:status] = 'error'
 
             ensure
-              session_id = session.session_id
+              session_id = @driver_connection.session_id
 
               @driver_connection.logs.each do |key, entries|
                 log_type = case key
@@ -68,11 +68,11 @@ module Termin
 
               run_log_id = @db.schema[:run_logs].insert(run_log_data.merge(
                 session_id:,
-                page_source_path: write_log_text(session_id, :page_source) { |f| f << session.page_source },
+                page_source_path: write_log_text(session_id, :page_source) { |f| f << @driver_connection.page_source },
                 last_screenshot_path: write_log_file(session_id, :last_screenshot, ext: 'png') do |log_data_path|
                   @driver_connection.screenshot(path: "#{log_data_path}/last_screenshot.png")
                 end,
-                last_url: session.current_url,
+                last_url: @driver_connection.current_url,
                 end_at: DateTime.now
               ))
 

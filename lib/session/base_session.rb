@@ -1,6 +1,10 @@
 module Termin
   module Session
     class BaseSession
+      ELEMENT_DELAY = 2
+      ELEMENT_TIMEOUT = 120
+      LOADING_TIMEOUT = 240
+
       attr_reader :driver
 
       def initialize(logger: nil, driver: nil)
@@ -16,32 +20,49 @@ module Termin
         raise NotImplementedError
       end
 
-      def delay_perform(delay: 3, &blk)
+      def click(delay: ELEMENT_DELAY, **opts)
+        sleep(delay) if delay > 0
+        element = wait_for_element(**opts)
+
+        element.click
+      end
+
+      def loading_wait(timeout: LOADING_TIMEOUT)
+        @logger.debug("Document loading...")
+
+        wait_for_element(delay: 0, timeout:, css: 'body > .loading') do |element|
+          !element.displayed?
+        end
+      end
+
+      def delay_perform(delay: ELEMENT_DELAY, &blk)
         @logger.debug("Navigating to: #{@driver.current_url}")
         sleep(delay)
         blk.call(@driver)
       end
 
-      def wait_for_element(delay: 3, timeout: 120, &blk)
+      def wait_for_element(delay: ELEMENT_DELAY, timeout: ELEMENT_TIMEOUT, **opts, &blk)
+        @logger.debug("Navigated to: #{@driver.current_url}")
+        @logger.debug("Waiting #{delay}s for element: #{opts}")
+
         sleep(delay)
         wait = Selenium::WebDriver::Wait.new(timeout:, ignore: [
           Selenium::WebDriver::Error::StaleElementReferenceError,
           Selenium::WebDriver::Error::ElementNotInteractableError,
           Selenium::WebDriver::Error::NoSuchElementError
         ])
-        wait.until(&blk)
-      end
 
-      def method_missing(method_name, *args, &block)
-        if @driver.respond_to?(method_name)
-          @driver.send(method_name, *args, &block)
-        else
-          super
+        element = nil
+        wait.until do
+          element = @driver.find_element(opts)
+          if block_given?
+            next blk.call(element)
+          else
+            next element.displayed?
+          end
         end
-      end
 
-      def respond_to_missing?(method_name, include_private = false)
-        @driver.respond_to?(method_name) || super
+        element
       end
     end
   end
