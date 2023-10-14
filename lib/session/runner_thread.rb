@@ -20,17 +20,19 @@ module Termin
         @logger.debug("VNC: #{vnc_url}")
         @logger.debug("log_data_path: #{@log_data_path}")
 
-        @threads = []
+        Thread.fork do
+          @threads = []
 
-        @threads << thread do |driver_connection|
-          Session::LeaExtend.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
+          @threads << thread do |driver_connection|
+            Session::LeaExtend.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
+          end
+
+          @threads << thread do |driver_connection|
+            Session::LeaTransfer.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
+          end
+
+          @threads.each { |t| t.join }
         end
-
-        @threads << thread do |driver_connection|
-          Session::LeaTransfer.new(logger: @logger, notifier: @notifier, driver: driver_connection.driver)
-        end
-
-        @threads.each { |t| t.join }
       end
 
       def thread(&blk)
