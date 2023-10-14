@@ -3,7 +3,7 @@ module Termin
     class BaseSession
       ELEMENT_DELAY = 2
       ELEMENT_TIMEOUT = 120
-      LOADING_TIMEOUT = 240
+      LOADING_TIMEOUT = 30
 
       attr_reader :driver
 
@@ -30,8 +30,12 @@ module Termin
       def loading_wait(timeout: LOADING_TIMEOUT)
         @logger.debug("Document loading...")
 
-        wait_for_element(timeout:, css: 'body > .loading') do |element|
-          !element.displayed?
+        begin
+          wait_for_element(timeout:, css: 'body > .loading') do |element|
+            !element.displayed?
+          end
+        rescue Selenium::WebDriver::Error::NoSuchElementError
+          @logger.debug("No loader found in DOM")
         end
       end
 
