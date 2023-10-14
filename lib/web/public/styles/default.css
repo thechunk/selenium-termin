@@ -29,6 +29,7 @@ iframe {
   overflow: scroll;
 }
 
-.pager {
+.controls {
   text-align: center;
+  padding: 1em;
 }

@@ -10,7 +10,19 @@ module Termin
           end
 
           get '/' do
-            @run_logs = settings.db.schema[:run_logs].reverse_order(:id).limit(100).all
+            type = params['type']
+            @run_types = ObjectSpace.each_object(Class)
+              .select { |k| k < Session::BaseSession }
+              .map { |k| k.to_s.split('::').last }
+              .reject { |k| k.to_s.start_with?('Base') }
+
+            run_logs_query = settings.db.schema[:run_logs]
+              .reverse_order(:id)
+              .limit(100)
+            run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
+
+            @run_logs = run_logs_query.all
+
             erb :index
           end
 
