@@ -76,7 +76,6 @@ module Termin
                 @logger.error("Unexpected error: #{e.full_message}")
                 run_log_data[:error] = e.full_message
                 run_log_data[:status] = 'error'
-
               ensure
                 session_id = @driver_connection.session_id
 

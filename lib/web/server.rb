@@ -15,7 +15,21 @@ module Termin
           end
 
           get '/run/:run_log_id' do
-            @log = settings.db.schema[:run_logs].where(id: params['run_log_id']).first
+            run_log_id = params['run_log_id']
+            @log = settings.db.schema[:run_logs].where(id: run_log_id).first
+            @next_id = settings.db.schema[:run_logs]
+              .where{id > run_log_id}
+              .order(:id)
+              .limit(1)
+              .select(:id)
+              .get(:id)
+            @previous_id = settings.db.schema[:run_logs]
+              .where{id < run_log_id}
+              .reverse_order(:id)
+              .limit(1)
+              .select(:id)
+              .get(:id)
+
             erb :run
           end
         end

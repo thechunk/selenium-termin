@@ -28,3 +28,7 @@ iframe {
   height: 70vh;
   overflow: scroll;
 }
+
+.pager {
+  text-align: center;
+}
