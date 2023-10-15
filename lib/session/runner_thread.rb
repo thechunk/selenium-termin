@@ -19,7 +19,13 @@ module Termin
         vnc_url = 'http://localhost:7900/?autoconnect=1&resize=scale&password=secret'
         @logger.debug("VNC: #{vnc_url}")
         @logger.debug("log_data_path: #{@log_data_path}")
-        prune(keep_only: 200)
+        Thread.fork do
+          keep_only = 200
+          @logger.debug("Pruning to keep #{keep_only}")
+          prune(keep_only:)
+
+          sleep 60 * 60
+        end
 
         Thread.fork do
           @threads = []
