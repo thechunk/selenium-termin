@@ -1,0 +1,13 @@
+<% unless @next_id.nil? %>
+  <a href="<%= "#{@pager_root}/#{@query_string}#{@next_id}" %>">newer</a>
+<% end %>
+<% unless @next_id.nil? %>
+  |
+<% end %>
+
+<a href="/">index</a>
+
+<% unless @previous_id.nil? %>
+  |
+  <a href="<%= "#{@pager_root}/#{@query_string}#{@previous_id}" %>">older</a>
+<% end %>

@@ -1,14 +1,5 @@
 <div class="controls">
-  <% unless @next_id.nil? %>
-    <a href="/run/<%= @next_id %>">next</a>
-  <% end %>
-  <% unless @next_id.nil? || @previous_id.nil? %>
-    |
-  <% end %>
-  <a href="/">index</a> |
-  <% unless @previous_id.nil? %>
-    <a href="/run/<%= @previous_id %>">previous</a>
-  <% end %>
+  <%= erb :pager %>
 </div>
 
 <table>

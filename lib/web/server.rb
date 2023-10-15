@@ -11,17 +11,24 @@ module Termin
 
           get '/' do
             type = params['type']
+            page = params['p'].to_i
+            limit = 20
+
             @run_types = ObjectSpace.each_object(Class)
               .select { |k| k < Session::BaseSession }
               .map { |k| k.to_s.split('::').last }
               .reject { |k| k.to_s.start_with?('Base') }
 
-            run_logs_query = settings.db.schema[:run_logs]
-              .reverse_order(:start_at)
-              .limit(100)
+            run_logs_query = settings.db.schema[:run_logs].reverse_order(:start_at)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
 
-            @run_logs = run_logs_query.all
+            total = run_logs_query.count
+            offset = page * limit
+
+            @query_string = "?type=#{type}&p="
+            @next_id = page - 1 if page > 0
+            @previous_id = page + 1 if offset + limit < total
+            @run_logs = run_logs_query.limit(limit).offset(offset).all
 
             erb :index
           end
@@ -29,6 +36,8 @@ module Termin
           get '/run/:run_log_id' do
             run_log_id = params['run_log_id']
             @log = settings.db.schema[:run_logs].where(id: run_log_id).first
+
+            @pager_root = '/run'
             @next_id = settings.db.schema[:run_logs]
               .where{id > run_log_id}
               .order(:start_at)
