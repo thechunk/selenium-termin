@@ -22,6 +22,7 @@ module Termin
         @runner_thread = Thread.fork do
           loop do
             prune(keep_only: 200)
+            cleanup_hung if @threads.empty?
 
             [Session::LeaExtend, Session::LeaTransfer].each do |klass|
               @threads << Thread.fork do
@@ -119,6 +120,11 @@ module Termin
       end
 
       private
+
+      def cleanup_hung
+        @db.schema[:run_logs].where(status: 'started')
+          .update(status: 'interrupt', end_at: DateTime.now)
+      end
 
       def prune(keep_only: 0)
         raise ArgumentError unless keep_only.is_a?(Integer)
