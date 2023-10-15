@@ -1,12 +1,19 @@
+Sequel.extension(:migration)
+
 module Termin
   module Data
     class Connection
+      include Singleton
+      attr_accessor :path, :debug
       attr_reader :schema
 
-      def initialize(logger:, path:, debug: false)
-        @logger = logger unless logger.nil?
-        @schema = Sequel.sqlite(path)
-        @schema.loggers << logger if debug
+      def initialize
+        @logger = Util::Logger.instance
+      end
+
+      def connect
+        @schema = Sequel.sqlite('./data.db' || @path)
+        @schema.loggers << @logger if @debug
       end
 
       def migrate

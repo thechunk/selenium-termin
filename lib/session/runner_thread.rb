@@ -1,14 +1,11 @@
-require 'objspace'
-
 module Termin
   module Session
     class RunnerThread
-      def initialize(logger: nil, notifier: nil, db: nil, &blk)
-        @driver_connection = DriverConnection.new(logger:)
-        @logger = logger
-        @notifier = notifier
-        @db = db
-        @blk = blk
+      def initialize
+        @logger = Util::Logger.instance
+        @driver_connection = DriverConnection.new(logger: @logger)
+        @notifier = Telegram::Notifier.instance
+        @db = Data::Connection.instance
 
         @lock = Mutex.new
 

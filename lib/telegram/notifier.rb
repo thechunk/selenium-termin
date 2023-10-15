@@ -1,10 +1,13 @@
 module Termin
   module Telegram
     class Notifier
-      def initialize(logger:, bot:, db:)
-        @logger = logger
-        @bot = bot
-        @db = db
+      include Singleton
+      attr_accessor :bot
+
+      def initialize
+        super
+        @logger = Util::Logger.instance
+        @db = Data::Connection.instance
       end
 
       def register(chat_id)

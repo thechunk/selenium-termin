@@ -1,5 +1,3 @@
-require_relative 'base_session.rb'
-
 module Termin
   module Session
     class BaseLeaSession < BaseSession

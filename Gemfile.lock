@@ -82,6 +82,7 @@ DEPENDENCIES
   sinatra
   sqlite3
   telegram-bot-ruby (~> 1.0)
+  zeitwerk
 
 BUNDLED WITH
    2.4.10
