@@ -8,6 +8,7 @@ module Termin
             set :port, 4567
             set :db, db
             set :traps, false
+            set :static_cache_control, :no_cache
           end
 
           get '/' do

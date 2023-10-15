@@ -25,6 +25,25 @@ thead > tr > th {
   border-bottom: 1px solid silver;
 }
 
+@media (prefers-color-scheme: dark) {
+  a {
+    color: deepskyblue;
+  }
+
+  a:visited {
+    color: lightsteelblue;
+  }
+
+  body {
+    background: #222;
+    color: white;
+  }
+
+  tr.even {
+    background: #555;
+  }
+}
+
 td > img {
   display: block;
   margin: 0 auto;
