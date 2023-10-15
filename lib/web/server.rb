@@ -17,7 +17,7 @@ module Termin
               .reject { |k| k.to_s.start_with?('Base') }
 
             run_logs_query = settings.db.schema[:run_logs]
-              .reverse_order(:id)
+              .reverse_order(:start_at)
               .limit(100)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
 
@@ -31,13 +31,13 @@ module Termin
             @log = settings.db.schema[:run_logs].where(id: run_log_id).first
             @next_id = settings.db.schema[:run_logs]
               .where{id > run_log_id}
-              .order(:id)
+              .order(:start_at)
               .limit(1)
               .select(:id)
               .get(:id)
             @previous_id = settings.db.schema[:run_logs]
               .where{id < run_log_id}
-              .reverse_order(:id)
+              .reverse_order(:start_at)
               .limit(1)
               .select(:id)
               .get(:id)

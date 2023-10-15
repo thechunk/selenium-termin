@@ -13,7 +13,7 @@
 <table>
   <thead>
     <tr>
-      <th>session_id</th>
+      <th>id</th>
       <th>start_at</th>
       <th>duration (s)</th>
       <th>type</th>
@@ -24,7 +24,9 @@
     <% @run_logs.each_index do |i| %>
       <% log = @run_logs[i] %>
       <tr class="<% if i % 2 == 0 %>even<% end %>">
-        <td><a href="<%= url("/run/#{log[:id]}") %>"><%= log[:session_id] %></a></td>
+        <td>
+          <a href="<%= url("/run/#{log[:id]}") %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
+        </td>
         <td><%= log[:start_at].strftime('%F %H:%M')  %></td>
         <td><%= (log[:end_at] - log[:start_at]).round(2) %></td>
         <td><%= log[:type] %></td>

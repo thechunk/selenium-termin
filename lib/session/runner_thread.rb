@@ -19,6 +19,7 @@ module Termin
         vnc_url = 'http://localhost:7900/?autoconnect=1&resize=scale&password=secret'
         @logger.debug("VNC: #{vnc_url}")
         @logger.debug("log_data_path: #{@log_data_path}")
+        prune(keep_only: 200)
 
         Thread.fork do
           @threads = []
@@ -68,6 +69,7 @@ module Termin
                 @driver_connection.open(session.root_url)
                 session.call
                 run_log_data[:status] = 'success'
+                run_log_data[:keep] = true
               rescue RunFailError => e
                 @logger.error("Runner failed: #{e.full_message}")
                 run_log_data[:error] = e.full_message
@@ -76,6 +78,7 @@ module Termin
                 @logger.error("Unexpected error: #{e.full_message}")
                 run_log_data[:error] = e.full_message
                 run_log_data[:status] = 'error'
+                run_log_data[:keep] = true
               ensure
                 session_id = @driver_connection.session_id
 
@@ -114,6 +117,51 @@ module Termin
       end
 
       private
+
+      def prune(keep_only: 0)
+        raise ArgumentError unless keep_only.is_a?(Integer)
+        raise ArgumentError unless keep_only > 0
+
+        @db.schema.transaction do
+          keep_limit = @db.schema[:run_logs]
+            .count(:id) - keep_only
+
+          return if keep_limit < 1
+
+          to_delete = @db.schema[:run_logs]
+            .where(keep: false)
+            .order(:start_at)
+            .limit(keep_limit)
+            .all
+
+          to_delete_ids = []
+
+          to_delete.each do |run_log|
+            public_path = "#{File.expand_path(Dir.pwd)}/lib/web/public"
+            log_data_path = "#{@log_data_path}/#{run_log[:session_id]}"
+            @logger.info("Deleting files in: #{log_data_path}")
+
+            [:last_screenshot_path, :page_source_path, :console_events_path, :network_events_path, :driver_events_path].each do |file|
+              next if run_log[file].nil?
+              File.unlink("#{public_path}/#{run_log[file]}")
+            rescue Errno::ENOENT
+              @logger.debug("File not found: #{run_log[file]}")
+            end
+
+            begin
+              Dir.unlink(log_data_path)
+            rescue Errno::ENOENT
+              @logger.debug("Dir not found: #{log_data_path}")
+            end
+
+            to_delete_ids << run_log[:id]
+          end
+
+          @db.schema[:run_logs].where(id: to_delete_ids).delete
+
+          @logger.info("Pruning #{to_delete_ids.count} logs...")
+        end
+      end
 
       def write_log_file(session_id, type, ext: '', &blk)
         log_data_path = "#{@log_data_path}/#{session_id}"
