@@ -64,7 +64,6 @@
   </tr>
   <tr>
     <td>
-      <%= "#{Dir.pwd}/lib/web/public/#{@log[:page_source_path]}" %>
       <% unless @log[:page_source_path].nil? %>
         <% File.open("#{Dir.pwd}/lib/web/public/#{@log[:page_source_path]}", 'r') do |f| %>
           <iframe srcdoc="<% f.each_line do |l| %><%= CGI.escapeHTML(l) %><% end %>"></iframe>
