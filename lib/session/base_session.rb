@@ -7,17 +7,18 @@ module Termin
 
       attr_reader :driver
 
-      def initialize(logger: nil, driver: nil)
-        @logger = logger
+      def initialize(driver: nil)
+        @logger = Util::Logger.instance
+        @notifier = Telegram::Notifier.instance
         @driver = driver
-      end
-
-      def root_url
-        raise NotImplementedError
       end
 
       def call
         raise NotImplementedError
+      end
+
+      def get(url)
+        @driver.get(url)
       end
 
       def click(delay: ELEMENT_DELAY, **opts)

@@ -44,7 +44,9 @@
   </tr>
   <tr>
     <td>
-      <pre><%= CGI::escapeHTML(@log[:error]) %></pre>
+      <% unless @log[:error].nil? %>
+        <pre><%= CGI::escapeHTML(@log[:error]) %></pre>
+      <% end %>
     </td>
   </tr>
 

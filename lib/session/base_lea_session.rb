@@ -1,15 +1,8 @@
 module Termin
   module Session
     class BaseLeaSession < BaseSession
-      def initialize(logger: nil, notifier: nil, driver: nil)
-        super(logger:, driver:)
-
-        @notifier = notifier
-        @logger = logger
-      end
-
-      def root_url
-        'https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188'
+      def initialize(driver: nil)
+        super(driver:)
       end
 
       def form
@@ -17,6 +10,8 @@ module Termin
       end
 
       def call
+        get('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188')
+
         loading_wait
         click(css: '.slide-content .link > a')
 

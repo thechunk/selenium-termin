@@ -28,11 +28,16 @@ module Termin
         notifier = Telegram::Notifier.instance
         notifier.bot = bot
 
-        telegram_listener = Telegram::ListenerThread.instance
-        telegram_listener.bot = bot
-        telegram_listener.call
+        telegram_listener = Telegram::ListenerThread.new(bot:)
+        session_runner = Session::RunnerThread.new
+        telegram_listener_thread = telegram_listener.call
+        session_runner_thread = session_runner.call
 
-        session_runner_thread = Session::RunnerThread.new.call
+        at_exit do
+          puts 'Terminating...'
+          session_runner.destroy
+        end
+
         web_instance = Web::Server.new(db:)
 
         session_runner_thread.join

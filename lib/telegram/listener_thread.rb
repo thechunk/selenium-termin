@@ -1,13 +1,10 @@
 module Termin
   module Telegram
     class ListenerThread
-      include Singleton
-      attr_accessor :bot
-
-      def initialize
-        super
+      def initialize(bot:)
         @notifier = Notifier.instance
         @logger = Util::Logger.instance
+        @bot = bot
       end
 
       def call

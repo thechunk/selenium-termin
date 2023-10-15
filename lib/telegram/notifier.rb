@@ -5,7 +5,6 @@ module Termin
       attr_accessor :bot
 
       def initialize
-        super
         @logger = Util::Logger.instance
         @db = Data::Connection.instance
       end

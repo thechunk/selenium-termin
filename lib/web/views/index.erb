@@ -30,7 +30,11 @@
           <a href="<%= url("/run/#{log[:id]}") %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
         </td>
         <td><%= log[:start_at].strftime('%F %H:%M')  %></td>
-        <td><%= (log[:end_at] - log[:start_at]).round(2) %></td>
+        <td>
+          <% unless log[:end_at].nil? %>
+            <%= (log[:end_at] - log[:start_at]).round(2) %>
+          <% end %>
+        </td>
         <td><%= log[:type] %></td>
         <td><%= log[:status] %></td>
       </tr>
