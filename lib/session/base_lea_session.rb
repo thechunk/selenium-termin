@@ -36,16 +36,15 @@ module Termin
           no_dates = messages_box.text == no_dates_error
 
           raise RunFailError.new(no_dates_error) if no_dates
-
-          wait_for_element(id: 'xi-fs-2')
-
-          @notifier.broadcast(text: 'Appointments available')
         rescue Selenium::WebDriver::Error::TimeoutError => e
+          @logger.error(e.full_message)
           @logger.info("messages_box: #{messages_box}")
           @logger.info("no_dates: #{no_dates}")
-
-          raise
         end
+
+        wait_for_element(id: 'xi-fs-2')
+
+        @notifier.broadcast(text: 'Appointments available')
       end
     end
   end

@@ -112,7 +112,7 @@ module Termin
 
         begin
           @driver_connection.quit
-        rescue Selenium::WebDriver::Error::InvalidSessionIdError => e
+        rescue Selenium::WebDriver::Error::ServerError, Selenium::WebDriver::Error::InvalidSessionIdError => e
           puts "Selenium session already ended: #{e.message}"
         end
 
