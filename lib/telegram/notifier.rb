@@ -21,7 +21,7 @@ module Termin
       end
 
       def broadcast(text: '', image_path: nil)
-        return if text.empty? || image_path.nil?
+        return if text.empty? && image_path.nil?
 
         unless image_path.nil?
           expanded_image_path = File.expand_path(image_path)
