@@ -37,7 +37,7 @@ module Termin
                   }
                 rescue UserInterruptError => e
                   @logger.debug("User interrupt: #{@session_id}")
-                  @db.schema[:run_logs].where(session_id: @session_id).update(
+                  @db.schema[:run_logs].where(session_id: @session_id, status: 'started').update(
                     error: e.full_message,
                     status: 'interrupt',
                     end_at: DateTime.now
