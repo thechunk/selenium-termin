@@ -36,6 +36,7 @@ module Termin
                     sleep 60
                   }
                 rescue UserInterruptError => e
+                  @lock.lock unless @lock.locked?
                   @logger.debug("User interrupt: #{@session_id}")
                   @db.schema[:run_logs].where(session_id: @session_id, status: 'started').update(
                     error: e.full_message,
