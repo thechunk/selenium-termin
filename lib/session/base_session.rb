@@ -48,9 +48,10 @@ module Termin
 
       def wait_for_element(delay: ELEMENT_DELAY, timeout: ELEMENT_TIMEOUT, **opts, &blk)
         @logger.debug("Navigated to: #{@driver.current_url}")
-        @logger.debug("Waiting #{delay}s + #{timeout}s for element: #{opts}")
 
         sleep(delay)
+        @logger.debug("Waiting #{timeout}s for element: #{opts}")
+
         wait = Selenium::WebDriver::Wait.new(timeout:, ignore: [
           Selenium::WebDriver::Error::StaleElementReferenceError,
           Selenium::WebDriver::Error::ElementNotInteractableError,
