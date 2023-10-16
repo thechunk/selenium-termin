@@ -42,9 +42,20 @@ module Termin
           @logger.info("no_dates: #{no_dates}")
         end
 
-        wait_for_element(id: 'xi-fs-2')
+        # parse calendar
+        calendar_element = wait_for_element(id: 'xi-fs-2')
+        day_elements = calendar_element.find_elements(css: 'td[data-handler="selectDay"]')
 
-        @notifier.broadcast(text: 'Appointments available')
+        available_days = []
+        day_elements.each do |day_element|
+          day = day_element.text
+          month = day_element.attribute('data-month')
+          year = day_element.attribute('data-year')
+
+          available_days << "* #{day}.#{month}.#{year}"
+        end
+
+        @notifier.broadcast(text: "Appointments available: #{available_days.join("\n")}")
       end
     end
   end
