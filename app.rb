@@ -38,8 +38,6 @@ module Termin
           session_runner.destroy
         end
 
-        web_instance = Web::Server.new(db:)
-
         session_runner_thread.join
       end
     end

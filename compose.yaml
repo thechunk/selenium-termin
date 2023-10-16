@@ -10,13 +10,24 @@ services:
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
       - "./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z"
-    ports:
-      - "4567:4567/tcp"
     environment:
       - APP_ENV=production
       - TZ=Europe/Berlin
     restart: always
     command: ruby app.rb
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP_ENV=production
+    ports:
+      - "4567:4567/tcp"
+    command: ruby web.rb
+    environment:
+      - APP_ENV=production
+      - TZ=Europe/Berlin
 
   grid:
     image: docker.io/selenium/standalone-chrome:latest

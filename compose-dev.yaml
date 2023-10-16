@@ -9,9 +9,24 @@ services:
         - APP_ENV=development
     volumes:
       - .:/usr/src/app
-    ports:
-      - "4567:4567/tcp"
     command: bash -c "bundle install && ruby app.rb"
+    environment:
+      - APP_ENV=development
+      - TZ=Europe/Berlin
+    stdin_open: true
+    tty: true
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+      args:
+        - APP_ENV=development
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5678:4567/tcp"
+    command: bash -c "bundle install && ruby web.rb"
     environment:
       - APP_ENV=development
       - TZ=Europe/Berlin
@@ -22,5 +37,5 @@ services:
     image: docker.io/selenium/standalone-chrome:latest
     shm_size: '2gb'
     ports:
-      - "4444:4444/tcp"
-      - "7900:7900/tcp"
+      - "4445:4444/tcp"
+      - "7901:7900/tcp"
