@@ -93,8 +93,11 @@ module Termin
             end_at: DateTime.now
           ))
 
-          if run_log_data.key?(:error)
-            @notifier.broadcast(text: "Runner failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
+          case run_log_data[:status]
+          when 'error'
+            @notifier.broadcast(text: "Run failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
+          when 'success'
+            @notifier.broadcast(text: "Run successful: http://fedora0.replo:4567/run/#{run_log_id}")
           end
         end
       end
