@@ -22,6 +22,9 @@ services:
       dockerfile: Dockerfile
       args:
         - APP_ENV=production
+    volumes:
+      - "./data.db:/usr/src/app/data.db:Z"
+      - "./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z"
     ports:
       - "4567:4567/tcp"
     command: ruby web.rb
