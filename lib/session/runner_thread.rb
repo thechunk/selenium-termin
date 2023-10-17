@@ -7,9 +7,7 @@ module Termin
         @notifier = Telegram::Notifier.instance
         @db = Data::Connection.instance
 
-        @lock = Mutex.new
         @runner_thread = nil
-        @threads = []
 
         @log_data_path = "#{File.expand_path(Dir.pwd)}/lib/web/public/logs"
       end
@@ -22,32 +20,17 @@ module Termin
         @runner_thread = Thread.fork do
           loop do
             prune(keep_only: 200)
-            cleanup_hung if @threads.empty?
+            cleanup_hung
 
             [Session::LeaExtend, Session::LeaTransfer].each do |klass|
-              @threads << Thread.fork do
-                @session_id = nil
-                begin
-                  @lock.synchronize {
+              @session_id = nil
+  
                     @driver_connection.connect do |driver_connection|
                       @session_id = driver_connection.session_id
                       execute(klass, driver_connection:)
                     end
                     sleep 60
-                  }
-                rescue UserInterruptError => e
-                  @lock.lock unless @lock.locked?
-                  @logger.debug("User interrupt: #{@session_id}")
-                  @db.schema[:run_logs].where(session_id: @session_id, status: 'started').update(
-                    error: e.full_message,
-                    status: 'interrupt',
-                    end_at: DateTime.now
-                  )
-                end
-              end
             end
-
-            @threads.each { |t| t.join }
           end
         end
       end
@@ -104,23 +87,21 @@ module Termin
       end
 
       def destroy
-        @threads.each do |thread|
-          if thread.alive?
-            puts "Stopping thread: #{thread}"
-            thread.raise(UserInterruptError.new)
-          else
-            puts "Killing thread: #{thread}"
-            thread.exit
-          end
-        end
+
+        @runner_thread.exit
+
+        @logger.debug("User interrupt: #{@session_id}")
+        @db.schema[:run_logs].where(session_id: @session_id, status: 'started').update(
+          error: e.full_message,
+          status: 'interrupt',
+          end_at: DateTime.now
+        )
 
         begin
           @driver_connection.quit
         rescue Selenium::WebDriver::Error::ServerError, Selenium::WebDriver::Error::InvalidSessionIdError => e
           puts "Selenium session already ended: #{e.message}"
         end
-
-        @runner_thread.exit
       end
 
       private
