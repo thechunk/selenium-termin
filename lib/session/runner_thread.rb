@@ -140,7 +140,7 @@ module Termin
           keep_limit = @db.schema[:run_logs]
             .count(:id) - keep_only
 
-          return if keep_limit < 1
+          return if keep_limit < 50
 
           to_delete = @db.schema[:run_logs]
             .where(keep: false)
