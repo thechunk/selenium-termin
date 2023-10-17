@@ -9,6 +9,8 @@ services:
         - APP_ENV=production
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
+      - "./data.db-shm:/usr/src/app/data.db-shm:Z"
+      - "./data.db-wal:/usr/src/app/data.db-wal:Z"
       - "./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z"
     environment:
       - APP_ENV=production
@@ -24,6 +26,8 @@ services:
         - APP_ENV=production
     volumes:
       - "./data.db:/usr/src/app/data.db:Z"
+      - "./data.db-shm:/usr/src/app/data.db-shm:Z"
+      - "./data.db-wal:/usr/src/app/data.db-wal:Z"
       - "./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z"
     ports:
       - "4567:4567/tcp"
