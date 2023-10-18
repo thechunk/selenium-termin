@@ -12,10 +12,10 @@ module Termin
       end
 
       def connect
-        host = 'postgres'
-        user = 'termin'
+        host = ENV['DATABASE_HOST']
+        user = ENV['DATABASE_USER']
         password = File.read(ENV['POSTGRES_PASSWORD_FILE']).chomp
-        database = 'termin'
+        database = ENV['DATABASE_DB']
 
         @schema = Sequel.postgres(host:, user:, password:, database:)
         @schema.loggers << @logger if @debug

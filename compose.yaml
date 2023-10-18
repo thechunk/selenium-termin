@@ -1,8 +1,12 @@
 services:
-  termin:
+  runner:
+    container_name: termin-runner
+    image: rcheung/termin_base:0.0.1-DEV
+    restart: always
+    command: ruby app.rb
     depends_on:
       - grid
-      - postgres
+      - db
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,30 +20,27 @@ services:
       TZ: Europe/Berlin
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
       POSTGRES_USER: termin
-    restart: always
-    command: ruby app.rb
 
   web:
+    container_name: termin-web
+    image: rcheung/termin_base:0.0.1-DEV
+    command: ruby web.rb
+    restart: always
     depends_on:
-      - postgres
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - APP_ENV=production
+      - db
     volumes:
       - ./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z
       - ./postgres_passwd:/run/secrets/postgres_passwd:z
     ports:
       - 4567:4567/tcp
-    command: ruby web.rb
     environment:
       APP_ENV: production
       TZ: Europe/Berlin
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
       POSTGRES_USER: termin
 
-  postgres:
+  db:
+    container_name: termin-db
     image: docker.io/library/postgres:16.0
     restart: always
     volumes:
@@ -50,6 +51,7 @@ services:
       POSTGRES_USER: termin
 
   grid:
+    container_name: termin-grid
     image: docker.io/selenium/standalone-chrome:latest
     restart: always
     shm_size: 2gb
