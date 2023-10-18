@@ -24,12 +24,13 @@ module Termin
 
             [Session::LeaExtend, Session::LeaTransfer].each do |klass|
               @session_id = nil
-  
-                    @driver_connection.connect do |driver_connection|
-                      @session_id = driver_connection.session_id
-                      execute(klass, driver_connection:)
-                    end
-                    sleep 60
+
+              @driver_connection.connect do |driver_connection|
+                @session_id = driver_connection.session_id
+                execute(klass, driver_connection:)
+              end
+
+              sleep 60
             end
           end
         end
