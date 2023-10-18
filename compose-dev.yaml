@@ -2,6 +2,7 @@ services:
   termin:
     depends_on:
       - grid
+      - postgres
     build:
       context: .
       dockerfile: Dockerfile-dev
@@ -9,14 +10,20 @@ services:
         - APP_ENV=development
     volumes:
       - .:/usr/src/app
+    secrets:
+      - postgres_passwd
     command: bash -c "bundle install && ruby app.rb"
     environment:
-      - APP_ENV=development
-      - TZ=Europe/Berlin
+      APP_ENV: development
+      TZ: Europe/Berlin
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
+      POSTGRES_USER: termin
     stdin_open: true
     tty: true
 
   web:
+    depends_on:
+      - postgres
     build:
       context: .
       dockerfile: Dockerfile-dev
@@ -24,18 +31,37 @@ services:
         - APP_ENV=development
     volumes:
       - .:/usr/src/app
+    secrets:
+      - postgres_passwd
     ports:
-      - "5678:4567/tcp"
+      - 5678:4567/tcp
     command: bash -c "bundle install && ruby web.rb"
     environment:
-      - APP_ENV=development
-      - TZ=Europe/Berlin
+      APP_ENV: development
+      TZ: Europe/Berlin
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
+      POSTGRES_USER: termin
     stdin_open: true
     tty: true
 
+  postgres:
+    image: docker.io/library/postgres:16.0
+    restart: always
+    volumes:
+      - ./var/postgresql_data:/var/lib/postgresql/data
+    secrets:
+      - postgres_passwd
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
+      POSTGRES_USER: termin
+
   grid:
     image: docker.io/selenium/standalone-chrome:latest
-    shm_size: '2gb'
+    shm_size: 2gb
     ports:
-      - "4445:4444/tcp"
-      - "7901:7900/tcp"
+      - 4445:4444/tcp
+      - 7901:7900/tcp
+
+secrets:
+  postgres_passwd:
+    file: ./postgres_passwd

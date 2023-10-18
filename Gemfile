@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'dotenv'
 gem 'sequel'
-gem 'sqlite3'
+gem 'pg'
 gem 'zeitwerk'
 
 gem 'puma'

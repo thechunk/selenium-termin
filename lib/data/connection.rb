@@ -4,7 +4,7 @@ module Termin
   module Data
     class Connection
       include Singleton
-      attr_accessor :path, :debug
+      attr_accessor :debug
       attr_reader :schema
 
       def initialize
@@ -12,7 +12,12 @@ module Termin
       end
 
       def connect
-        @schema = Sequel.sqlite('./data.db' || @path)
+        host = 'postgres'
+        user = 'termin'
+        password = File.read(ENV['POSTGRES_PASSWORD_FILE']).chomp
+        database = 'termin'
+
+        @schema = Sequel.postgres(host:, user:, password:, database:)
         @schema.loggers << @logger if @debug
       end
 

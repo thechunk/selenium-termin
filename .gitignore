@@ -56,7 +56,12 @@ build-iPhoneSimulator/
 # .rubocop-https?--*
 
 telegramtoken
+postgres_passwd
 data.db
 .DS_Store
+
 lib/web/public/logs/*
 !lib/web/public/logs/.gitkeep
+
+var/*
+!var/.gitkeep

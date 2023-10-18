@@ -12,7 +12,6 @@ loader.push_dir('lib', namespace: Termin)
 loader.setup
 
 db = Termin::Data::Connection.instance
-db.path = './data.db'
 db.connect
 db.migrate
 
