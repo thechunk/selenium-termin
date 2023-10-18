@@ -1,7 +1,7 @@
 services:
   runner:
     container_name: termin-runner
-    image: rcheung/termin_base:0.0.1-DEV
+    image: rcheung/termin_base:0.0.1
     restart: always
     command: ruby app.rb
     depends_on:
@@ -23,7 +23,7 @@ services:
 
   web:
     container_name: termin-web
-    image: rcheung/termin_base:0.0.1-DEV
+    image: rcheung/termin_base:0.0.1
     command: ruby web.rb
     restart: always
     depends_on:
