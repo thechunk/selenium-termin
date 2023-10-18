@@ -18,7 +18,7 @@ module Termin
             type = params['type']
             limit = 20
 
-            halt 400 if @page < 1
+            halt 400 if @page < 0
 
             @run_types = ObjectSpace.each_object(Class)
               .select { |k| k < Session::BaseSession }
@@ -32,7 +32,7 @@ module Termin
             @total = run_logs_query.count
             @pages = (@total / limit).ceil
 
-            next_id = @page - 1 if @page > 1
+            next_id = @page - 1 if @page > 0
             next_query = URI.encode_www_form(type:, p: next_id)
             @next_path = "/?#{next_query}" unless next_id.nil?
 
@@ -40,7 +40,7 @@ module Termin
             previous_query = URI.encode_www_form(type:, p: previous_id)
             @previous_path = "/?#{previous_query}" unless previous_id.nil?
 
-            @first_path = "/?#{URI.encode_www_form(type:, p: 1)}" unless @page == 1
+            @first_path = "/?#{URI.encode_www_form(type:, p: 0)}" unless @page == 0
             @last_path = "/?#{URI.encode_www_form(type:, p: @pages)}" unless @page == @pages
 
             @run_logs = run_logs_query.limit(limit).offset(offset).all
