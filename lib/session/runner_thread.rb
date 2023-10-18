@@ -118,15 +118,16 @@ module Termin
         @logger.debug("Pruning to keep #{keep_only}")
 
         @db.schema.transaction do
-          keep_limit = @db.schema[:run_logs]
-            .count(:id) - keep_only
+          deletable_count = @db.schema[:run_logs]
+            .where(keep: false)
+            .count(:id)
 
-          return if keep_limit < 50
+          return if deletable_count < keep_only
 
           to_delete = @db.schema[:run_logs]
             .where(keep: false)
             .order(:start_at)
-            .limit(keep_limit)
+            .limit(keep_only)
             .all
 
           to_delete_ids = []
