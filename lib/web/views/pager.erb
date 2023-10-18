@@ -1,13 +1,25 @@
-<% unless @next_id.nil? %>
-  <a href="<%= "#{@pager_root}/#{@query_string}#{@next_id}" %>">newer</a>
+<% unless @first_path.nil? %>
+  <a href="<%= @first_path %>">first</a>
+  |
 <% end %>
-<% unless @next_id.nil? %>
+
+<% unless @next_path.nil? %>
+  <a href="<%= @next_path %>">newer</a>
+<% end %>
+<% unless @next_path.nil? %>
   |
 <% end %>
 
 <a href="/">index</a>
+|
+<%= @page %> / <%= @pages %> (<%= @total %>)
 
-<% unless @previous_id.nil? %>
+<% unless @previous_path.nil? %>
   |
-  <a href="<%= "#{@pager_root}/#{@query_string}#{@previous_id}" %>">older</a>
+  <a href="<%= @previous_path %>">older</a>
+<% end %>
+
+<% unless @last_path.nil? %>
+  |
+  <a href="<%= @last_path %>">last</a>
 <% end %>

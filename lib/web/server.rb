@@ -12,9 +12,13 @@ module Termin
           end
 
           get '/' do
+            @page = 1 unless params.key?('p')
+            @page ||= params['p'].to_i
+
             type = params['type']
-            page = params['p'].to_i
             limit = 20
+
+            halt 400 if @page < 1
 
             @run_types = ObjectSpace.each_object(Class)
               .select { |k| k < Session::BaseSession }
@@ -24,12 +28,21 @@ module Termin
             run_logs_query = settings.db.schema[:run_logs].reverse_order(:start_at)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
 
-            total = run_logs_query.count
-            offset = page * limit
+            offset = @page * limit
+            @total = run_logs_query.count
+            @pages = (@total / limit).ceil
 
-            @query_string = "?type=#{type}&p="
-            @next_id = page - 1 if page > 0
-            @previous_id = page + 1 if offset + limit < total
+            next_id = @page - 1 if @page > 1
+            next_query = URI.encode_www_form(type:, p: next_id)
+            @next_path = "/?#{next_query}" unless next_id.nil?
+
+            previous_id = @page + 1 if offset + limit < @total
+            previous_query = URI.encode_www_form(type:, p: previous_id)
+            @previous_path = "/?#{previous_query}" unless previous_id.nil?
+
+            @first_path = "/?#{URI.encode_www_form(type:, p: 1)}" unless @page == 1
+            @last_path = "/?#{URI.encode_www_form(type:, p: @pages)}" unless @page == @pages
+
             @run_logs = run_logs_query.limit(limit).offset(offset).all
 
             erb :index
@@ -39,19 +52,21 @@ module Termin
             run_log_id = params['run_log_id']
             @log = settings.db.schema[:run_logs].where(id: run_log_id).first
 
-            @pager_root = '/run'
-            @next_id = settings.db.schema[:run_logs]
+            next_id = settings.db.schema[:run_logs]
               .where{id > run_log_id}
               .order(:start_at)
               .limit(1)
               .select(:id)
               .get(:id)
-            @previous_id = settings.db.schema[:run_logs]
+            previous_id = settings.db.schema[:run_logs]
               .where{id < run_log_id}
               .reverse_order(:start_at)
               .limit(1)
               .select(:id)
               .get(:id)
+
+            @next_path = "/run/#{next_id}"
+            @previous_path = "/run/#{previous_id}"
 
             erb :run
           end
