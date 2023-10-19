@@ -1,6 +1,6 @@
 services:
   runner:
-    container_name: termin-runner
+    container_name: termin-runner-dev
     image: rcheung/termin_base:0.0.1-DEV
     restart: always
     command: bash -c "bundle install && ruby app.rb"
@@ -25,7 +25,7 @@ services:
     tty: true
 
   web:
-    container_name: termin-web
+    container_name: termin-web-dev
     image: rcheung/termin_base:0.0.1-DEV
     command: bash -c "bundle install && ruby web.rb"
     restart: always
@@ -46,7 +46,7 @@ services:
     tty: true
 
   db:
-    container_name: termin-db
+    container_name: termin-db-dev
     image: docker.io/library/postgres:16.0
     restart: always
     volumes:
@@ -58,7 +58,7 @@ services:
       POSTGRES_USER: termin
 
   grid:
-    container_name: termin-grid
+    container_name: termin-grid-dev
     image: docker.io/selenium/standalone-chrome:latest
     restart: always
     shm_size: 2gb

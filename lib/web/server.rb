@@ -20,10 +20,7 @@ module Termin
 
             halt 400 if @page < 1
 
-            @run_types = ObjectSpace.each_object(Class)
-              .select { |k| k < Session::BaseSession }
-              .map { |k| k.to_s.split('::').last }
-              .reject { |k| k.to_s.start_with?('Base') }
+            @run_types = settings.db.schema[:run_logs].distinct(:type).select_map(:type)
 
             run_logs_query = settings.db.schema[:run_logs].reverse_order(:start_at)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
