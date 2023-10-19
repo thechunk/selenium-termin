@@ -16,7 +16,7 @@ module Termin
             @page ||= params['p'].to_i
 
             type = params['type']
-            limit = 40
+            limit = 30
 
             halt 400 if @page < 1
 
@@ -40,7 +40,7 @@ module Termin
             previous_query = URI.encode_www_form(type:, p: previous_id)
             @previous_path = "/?#{previous_query}" unless previous_id.nil?
 
-            @first_path = "/?#{URI.encode_www_form(type:, p: 1)}" unless @page == 0
+            @first_path = "/?#{URI.encode_www_form(type:, p: 1)}" unless @page == 1
             @last_path = "/?#{URI.encode_www_form(type:, p: @pages)}" unless @page == @pages
 
             @run_logs = run_logs_query.limit(limit).offset(offset).all
