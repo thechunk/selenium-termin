@@ -16,7 +16,7 @@ module Termin
             @page ||= params['p'].to_i
 
             type = params['type']
-            limit = 5
+            limit = 40
 
             halt 400 if @page < 1
 
