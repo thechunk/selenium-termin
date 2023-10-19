@@ -10,9 +10,20 @@
   |
 <% end %>
 
-<a href="/">index</a>
-|
-<%= @page %> / <%= @pages %> (<%= @total %>)
+<% unless request.path == '/' %>
+  <a href="/">index</a>
+  |
+<% end %>
+
+<% unless @page.nil? || @pages.nil? %>
+  <%= @page %>
+  /
+  <%= @pages %>
+<% end %>
+
+<% unless @total.nil? %>
+  (<%= @total %>)
+<% end %>
 
 <% unless @previous_path.nil? %>
   |
