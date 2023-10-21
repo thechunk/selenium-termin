@@ -1,2 +1,5 @@
-lib/web/public/logs
+web/public/logs
+web/public/dist
 data.db
+node_modules
+var

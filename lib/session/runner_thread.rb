@@ -9,7 +9,7 @@ module Termin
 
         @runner_thread = nil
 
-        @log_data_path = "#{File.expand_path(Dir.pwd)}/lib/web/public/logs"
+        @log_data_path = "#{File.expand_path(Dir.pwd)}/web/public/logs"
       end
 
       def call
@@ -80,9 +80,9 @@ module Termin
 
           case run_log_data[:status]
           when 'error'
-            @notifier.broadcast(text: "Run failed unexpectedly: http://fedora0.replo:4567/run/#{run_log_id}")
+            @notifier.broadcast(text: "Run failed unexpectedly: #{ENV['BASE_URL']}/run/#{run_log_id}")
           when 'success'
-            @notifier.broadcast(text: "Run successful: http://fedora0.replo:4567/run/#{run_log_id}")
+            @notifier.broadcast(text: "Run successful: #{ENV['BASE_URL']}/run/#{run_log_id}")
           end
         end
       end
@@ -134,7 +134,7 @@ module Termin
           to_delete_ids = []
 
           to_delete.each do |run_log|
-            public_path = "#{File.expand_path(Dir.pwd)}/lib/web/public"
+            public_path = "#{File.expand_path(Dir.pwd)}/web/public"
             log_data_path = "#{@log_data_path}/#{run_log[:session_id]}"
             @logger.info("Deleting files in: #{log_data_path}")
 

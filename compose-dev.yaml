@@ -1,7 +1,7 @@
 services:
   runner:
     container_name: termin-runner-dev
-    image: rcheung/termin_base:0.0.1-DEV
+    image: rcheung/termin_base:0.0.1-1-DEV
     restart: always
     command: bash -c "bundle install && ruby app.rb"
     depends_on:
@@ -26,8 +26,7 @@ services:
 
   web:
     container_name: termin-web-dev
-    image: rcheung/termin_base:0.0.1-DEV
-    command: bash -c "bundle install && ruby web.rb"
+    image: rcheung/termin_base:0.0.1-1-DEV
     restart: always
     depends_on:
       - db

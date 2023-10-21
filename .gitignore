@@ -60,8 +60,13 @@ postgres_passwd
 data.db
 .DS_Store
 
-lib/web/public/logs/*
-!lib/web/public/logs/.gitkeep
+web/public/logs/*
+!web/public/logs/.gitkeep
 
 var/*
 !var/.gitkeep
+
+.parcel-cache
+web/dist
+node_modules
+supervisord.pid

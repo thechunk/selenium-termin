@@ -1,0 +1,24 @@
+{
+  "name": "selenium-termin",
+  "version": "0.0.1-1",
+  "description": "### dev",
+  "source": [
+    "./web/index.js",
+    "./web/default.css"
+  ],
+  "targets": {
+    "default": {
+      "distDir": "./web/public/dist"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@picocss/pico": "^1.5.10",
+    "parcel": "^2.10.0"
+  }
+}
