@@ -72,7 +72,7 @@ module Termin
         @notifier.broadcast(text: "Times available for last opening:\n#{time_options}")
 
         first_time_element = time_option_elements.select do |element|
-          element.text.split(':').first.to_i > 10
+          element.text.split(':').first.to_i > 8
         end.first
 
         @logger.debug("Selecting first available time: #{first_time_element}")
@@ -88,7 +88,7 @@ module Termin
       def bypass_captcha
         @logger.debug('Trying captcha...')
 
-        captcha_iframe = @driver.find_element('iframe[title="reCAPTCHA"]')
+        captcha_iframe = @driver.find_element(css: 'iframe[title="reCAPTCHA"]')
         @driver.switch_to.frame(captcha_iframe)
         captcha_checkbox_rect = @driver
           .find_element(css: '#rc-anchor-container .recaptcha-checkbox-border')
