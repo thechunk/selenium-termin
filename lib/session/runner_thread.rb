@@ -98,7 +98,7 @@ module Termin
 
         begin
           @driver_connection.quit
-        rescue Selenium::WebDriver::Error::ServerError, Selenium::WebDriver::Error::InvalidSessionIdError => e
+        rescue Exception => e
           puts "Selenium session already ended: #{e.message}"
         end
       end
@@ -137,16 +137,20 @@ module Termin
             @logger.info("Deleting files in: #{log_data_path}")
 
             [:last_screenshot_path, :page_source_path, :console_events_path, :network_events_path, :driver_events_path].each do |file|
-              next if run_log[file].nil?
+              next if run_log[file].nil? || run_log[file].empty?
               File.unlink("#{public_path}/#{run_log[file]}")
             rescue Errno::ENOENT
               @logger.debug("File not found: #{run_log[file]}")
+            rescue Errno::ENOTEMPTY
+              @logger.debug("Dir not empty: #{run_log[file]}")
             end
 
             begin
               Dir.unlink(log_data_path)
             rescue Errno::ENOENT
               @logger.debug("Dir not found: #{log_data_path}")
+            rescue Errno::ENOTEMPTY
+              @logger.debug("Dir not empty: #{log_data_path}")
             end
 
             to_delete_ids << run_log[:id]
