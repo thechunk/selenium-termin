@@ -13,7 +13,7 @@ services:
       args:
         - APP_ENV=production
     volumes:
-      - ./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z
+      - ./web/public/logs:/usr/src/app/web/public/logs:z
       - ./postgres_passwd:/run/secrets/postgres_passwd:z
     environment:
       APP_ENV: production
@@ -29,7 +29,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./lib/web/public/logs:/usr/src/app/lib/web/public/logs:z
+      - ./web/public/logs:/usr/src/app/web/public/logs:z
       - ./postgres_passwd:/run/secrets/postgres_passwd:z
     ports:
       - 4567:4567/tcp
