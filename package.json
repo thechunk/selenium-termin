@@ -20,5 +20,8 @@
   "dependencies": {
     "@picocss/pico": "^1.5.10",
     "parcel": "^2.10.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.10.0"
   }
 }

@@ -28,6 +28,7 @@ services:
     container_name: termin-web-dev
     image: rcheung/termin_base:0.0.1-1-DEV
     restart: always
+    command: bash -c "npm install && /usr/bin/supervisord"
     depends_on:
       - db
     volumes:

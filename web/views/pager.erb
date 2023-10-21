@@ -1,36 +1,37 @@
-<% unless @first_path.nil? %>
-  <a href="<%= @first_path %>">first</a>
-  |
-<% end %>
+<section align="center">
+  <nav>
+    <ul>
+      <% unless @first_path.nil? %>
+        <li><a href="<%= @first_path %>">first</a></li>
+      <% end %>
 
-<% unless @next_path.nil? %>
-  <a href="<%= @next_path %>">newer</a>
-<% end %>
-<% unless @next_path.nil? %>
-  |
-<% end %>
+      <% unless @next_path.nil? %>
+        <li><a href="<%= @next_path %>">newer</a></li>
+      <% end %>
 
-<% unless request.path == '/' %>
-  <a href="/">index</a>
-  |
-<% end %>
+      <% unless request.path == '/' %>
+        <li><a href="/">index</a></li>
+      <% end %>
 
-<% unless @page.nil? || @pages.nil? %>
-  <%= @page %>
-  /
-  <%= @pages %>
-<% end %>
+      <% unless @previous_path.nil? %>
+        <li><a href="<%= @previous_path %>">older</a></li>
+      <% end %>
 
-<% unless @total.nil? %>
-  (<%= @total %>)
-<% end %>
+      <% unless @last_path.nil? %>
+        <li><a href="<%= @last_path %>">last</a></li>
+      <% end %>
+    </ul>
+  </nav>
 
-<% unless @previous_path.nil? %>
-  |
-  <a href="<%= @previous_path %>">older</a>
-<% end %>
+  <% unless @page.nil? || @pages.nil? %>
+    <small>
+      <%= @page %>
+      /
+      <%= @pages %>
 
-<% unless @last_path.nil? %>
-  |
-  <a href="<%= @last_path %>">last</a>
-<% end %>
+      <% unless @total.nil? %>
+        (<%= @total %>)
+      <% end %>
+    </small>
+  <% end %>
+</section>

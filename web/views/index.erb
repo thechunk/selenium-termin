@@ -1,32 +1,37 @@
-<div class="controls">
-  <%= erb :pager %>
+<%= erb :pager %>
 
-  <form method="get">
-    <select name="type" onchange="this.form.submit()">
-      <option value="">All</option>
-      <% @run_types.each do |run_type| %>
-        <option value="<%= run_type %>" <% if params['type'] == run_type %>selected<% end %>><%= run_type %></option>
-      <% end %>
-    </select>
-    <input type="submit" value="Filter">
-  </form>
-</div>
+<form method="get">
+  <div class="grid">
+    <div>
+      <select name="type" onchange="this.form.submit()">
+        <option value="">All</option>
+        <% @run_types.each do |run_type| %>
+          <option value="<%= run_type %>" <% if params['type'] == run_type %>selected<% end %>><%= run_type %></option>
+        <% end %>
+      </select>
+    </div>
 
-<table>
+    <div>
+      <input type="submit" value="Filter">
+    </div>
+  </div>
+</form>
+
+<table role="grid">
   <thead>
     <tr>
-      <th>id</th>
-      <th>start_at</th>
-      <th>duration (s)</th>
-      <th>type</th>
-      <th>status</th>
+      <th scope="col">id</th>
+      <th scope="col">start_at</th>
+      <th scope="col">duration (s)</th>
+      <th scope="col">type</th>
+      <th scope="col">status</th>
     </tr>
   </thead>
   <tbody>
     <% @run_logs.each_index do |i| %>
       <% log = @run_logs[i] %>
-      <tr class="<% if i % 2 == 0 %>even<% end %>">
-        <td>
+      <tr>
+        <th scope="row">
           <a href="<%= url("/run/#{log[:id]}") %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
         </td>
         <td><%= log[:start_at].strftime('%F %H:%M')  %></td>
@@ -41,3 +46,5 @@
     <% end %>
   </tbody>
 </table>
+
+<%= erb :pager %>

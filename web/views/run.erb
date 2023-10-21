@@ -1,27 +1,25 @@
-<div class="controls">
-  <%= erb :pager %>
-</div>
+<%= erb :pager %>
 
 <table>
   <tbody>
     <tr>
-      <th>session_id</td>
+      <th scope="row">session_id</td>
       <td><%= @log[:session_id] %></td>
     </tr>
     <tr>
-      <th>last_url</td>
+      <th scope="row">last_url</td>
       <td><%= @log[:last_url] %></td>
     </tr>
     <tr>
-      <th>start_at</td>
+      <th scope="row">start_at</td>
       <td><%= @log[:start_at] %></td>
     </tr>
     <tr>
-      <th>end_at</td>
+      <th scope="row">end_at</td>
       <td><%= @log[:end_at] %></td>
     </tr>
     <tr>
-      <th>status</td>
+      <th scope="row">status</td>
       <td><%= @log[:status] %></td>
     </tr>
 
@@ -38,40 +36,28 @@
   </tbody>
 </table>
 
-<table>
-  <tr>
-    <th>error</th>
-  </tr>
-  <tr>
-    <td>
-      <% unless @log[:error].nil? %>
-        <pre><%= CGI::escapeHTML(@log[:error]) %></pre>
-      <% end %>
-    </td>
-  </tr>
+<details open>
+  <summary>error</summary>
+  <% unless @log[:error].nil? %>
+    <code><%= CGI::escapeHTML(@log[:error]) %></code>
+  <% end %>
+</details>
 
-  <tr>
-    <th>last_screenshot</th>
-  </tr>
-  <tr>
-    <td>
-      <% unless @log[:last_screenshot_path].nil? %>
-        <img src="/<%= @log[:last_screenshot_path] %>" />
-      <% end %>
-    </td>
-  </tr>
+<details>
+  <summary>last_screenshot</summary>
+  <% unless @log[:last_screenshot_path].nil? %>
+    <figure>
+      <img src="/<%= @log[:last_screenshot_path] %>" />
+    </figure>
+  <% end %>
+</details>
 
-  <tr>
-    <th>page_source</th>
-  </tr>
-  <tr>
-    <td>
-      <% unless @log[:page_source_path].nil? %>
-        <% File.open("#{Dir.pwd}/web/public/#{@log[:page_source_path]}", 'r') do |f| %>
-          <iframe srcdoc="<% f.each_line do |l| %><%= CGI.escapeHTML(l) %><% end %>"></iframe>
-        <% end %>
-      <% end %>
-    </td>
-  </tr>
-  
-</table>
+<details>
+  <summary>page_source</summary>
+  <% unless @log[:page_source_path].nil? %>
+    <% File.open("#{Dir.pwd}/web/public/#{@log[:page_source_path]}", 'r') do |f| %>
+      <iframe srcdoc="<% f.each_line do |l| %><%= CGI.escapeHTML(l) %><% end %>"></iframe>
+    <% end %>
+  <% end %>
+  </summary>
+</details>
