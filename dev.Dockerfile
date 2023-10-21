@@ -24,9 +24,10 @@ RUN apt-get install -y nodejs
 
 FROM INSTALL as NPM
 
+COPY package.json package-lock.json .
 RUN npm install
 
-FROM INSTALL as FINAL
+FROM NPM as FINAL
 
 COPY . .
 
