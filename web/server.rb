@@ -58,10 +58,11 @@ module Termin
             next_id_query = settings.db.schema[:run_logs].where(Sequel.lit('start_at > ?', @log[:start_at]))
             previous_id_query = settings.db.schema[:run_logs].where(Sequel.lit('start_at < ?', @log[:start_at]))
 
-            [next_id_query, previous_id_query].each do |query|
-              query = query.where(type:) unless type.nil? || type.empty?
-              query = query.where(status:) unless status.nil? || status.empty?
-            end
+            next_id_query = next_id_query.where(type:) unless type.nil? || type.empty?
+            next_id_query = next_id_query.where(status:) unless status.nil? || status.empty?
+
+            previous_id_query = previous_id_query.where(type:) unless type.nil? || type.empty?
+            previous_id_query = previous_id_query.where(status:) unless status.nil? || status.empty?
 
             next_id = next_id_query
               .order(:start_at)
@@ -74,8 +75,8 @@ module Termin
               .select(:id)
               .get(:id)
 
-            @next_path = "/run/#{next_id}"
-            @previous_path = "/run/#{previous_id}"
+            @next_path = "/run/#{next_id}" unless next_id.nil?
+            @previous_path = "/run/#{previous_id}" unless previous_id.nil?
 
             erb :run
           end
