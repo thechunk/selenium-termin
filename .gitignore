@@ -67,6 +67,6 @@ var/*
 !var/.gitkeep
 
 .parcel-cache
-web/dist
+web/public/dist
 node_modules
 supervisord.pid
