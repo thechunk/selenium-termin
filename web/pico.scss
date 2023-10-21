@@ -13,3 +13,7 @@ iframe {
     justify-content: center;
   }
 }
+
+td > code {
+  word-break: break-word;
+}
