@@ -3,10 +3,19 @@
 <form method="get">
   <div class="grid">
     <div>
-      <select name="type" onchange="this.form.submit()">
+      <select name="type" title="type" onchange="this.form.submit()">
         <option value="">All</option>
         <% @run_types.each do |run_type| %>
           <option value="<%= run_type %>" <% if params['type'] == run_type %>selected<% end %>><%= run_type %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div>
+      <select name="status" title="status" onchange="this.form.submit()">
+        <option value="">All</option>
+        <% @run_statuses.each do |run_status| %>
+          <option value="<%= run_status %>" <% if params['status'] == run_status %>selected<% end %>><%= run_status %></option>
         <% end %>
       </select>
     </div>
@@ -32,7 +41,7 @@
       <% log = @run_logs[i] %>
       <tr>
         <th scope="row">
-          <a href="<%= url("/run/#{log[:id]}") %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
+          <a href="<%= url("/run/#{log[:id]}") %>?<%= URI.encode_www_form(type: request.params['type'], status: request.params['status'])%>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
         </td>
         <td><%= log[:start_at].strftime('%y.%m.%d %H:%M')  %></td>
         <td>
