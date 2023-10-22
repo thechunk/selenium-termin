@@ -3,8 +3,8 @@
   "version": "0.0.1-1",
   "description": "### dev",
   "source": [
-    "./web/index.js",
-    "./web/default.css"
+    "./web/js/index.js",
+    "./web/css/default.scss"
   ],
   "targets": {
     "default": {
