@@ -1,9 +1,9 @@
 module Termin
-  module Session
+  module Runner
     class RunnerThread
       def initialize
         @logger = Util::Logger.instance
-        @driver_connection = DriverConnection.new(logger: @logger)
+        @driver_connection = Session::DriverConnection.new(logger: @logger)
         @notifier = Telegram::Notifier.instance
         @db = Data::Connection.instance
 
@@ -22,7 +22,7 @@ module Termin
             prune(keep_only: 200)
             cleanup_hung
 
-            [Session::LeaExtend, Session::LeaTransfer].each do |klass|
+            [LeaExtend, LeaTransfer].each do |klass|
               @session_id = nil
 
               @driver_connection.connect do |driver_connection|
@@ -53,7 +53,7 @@ module Termin
           session.call
           run_log_data[:status] = 'success'
           run_log_data[:keep] = true
-        rescue RunFailError => e
+        rescue Session::RunFailError => e
           @logger.error("Runner failed: #{e.full_message}")
           run_log_data[:error] = e.full_message
           run_log_data[:status] = 'fail'

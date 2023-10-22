@@ -13,7 +13,7 @@ notifier = Termin::Telegram::Notifier.instance
 notifier.bot = bot
 
 telegram_listener = Termin::Telegram::ListenerThread.new(bot:)
-session_runner = Termin::Session::RunnerThread.new
+session_runner = Termin::Runner::RunnerThread.new
 telegram_listener_thread = telegram_listener.call
 session_runner_thread = session_runner.call
 

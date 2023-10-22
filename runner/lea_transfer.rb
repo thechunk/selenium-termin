@@ -1,8 +1,8 @@
 module Termin
-  module Session
-    class LeaTransfer < BaseLeaSession
+  module Runner
+    class LeaTransfer < Session::BaseLeaSession
       def form
-        Form.new(self, [
+        Session::Form.new(self, [
           { name: 'sel_staat', value: 'Canada' },
           { name: 'personenAnzahl_normal', value: 'one person' },
           { name: 'lebnBrMitFmly', value: 'yes' },
