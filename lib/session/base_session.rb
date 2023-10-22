@@ -35,8 +35,8 @@ module Termin
           wait_for_element(timeout:, css: 'body > .loading') do |element|
             !element.displayed?
           end
-        rescue Selenium::WebDriver::Error::NoSuchElementError
-          @logger.debug("No loader found in DOM")
+        rescue Selenium::WebDriver::Error::NoSuchElementError, Selenium::WebDriver::Error::UnknownError => e
+          @logger.error("No loader found in DOM: #{e.full_message}")
         end
       end
 
