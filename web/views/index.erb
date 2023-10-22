@@ -41,7 +41,7 @@
       <% log = @run_logs[i] %>
       <tr>
         <th scope="row">
-          <a href="<%= url("/run/#{log[:id]}") %>?<%= URI.encode_www_form(type: request.params['type'], status: request.params['status'])%>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
+          <a href="<%= Termin::Web::Url.run_url(log[:id], query: Termin::Web::Url.query(type: request.params['type'], status: request.params['status']), request:) %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
         </td>
         <td><%= log[:start_at].strftime('%m.%d %H:%M')  %></td>
         <td class="sm-hidden">

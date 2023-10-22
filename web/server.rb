@@ -33,15 +33,25 @@ module Termin
             @pages = (@total / limit.to_f).ceil
 
             next_id = @page - 1 if @page > 1
-            next_query = URI.encode_www_form(type:, status:, p: next_id)
-            @next_path = Url.index_url(query: next_query) unless next_id.nil?
+            @next_path = Url.index_url(
+              query: Url.query(type:, status:, p: next_id),
+              request:
+            ) unless next_id.nil?
 
             previous_id = @page + 1 if @page < @pages
-            previous_query = URI.encode_www_form(type:, status:, p: previous_id)
-            @previous_path = Url.index_url(query: previous_query) unless previous_id.nil?
+            @previous_path = Url.index_url(
+              query: Url.query(type:, status:, p: previous_id),
+              request:
+            ) unless previous_id.nil?
 
-            @first_path = Url.index_url(query: URI.encode_www_form(type:, status:, p: 1)) unless @page == 1
-            @last_path = Url.index_url(query: URI.encode_www_form(type:, status:, p: @pages)) unless @page == @pages
+            @first_path = Url.index_url(
+              query: Url.query(type:, status:, p: 1),
+              request:
+            ) unless @page == 1
+            @last_path = Url.index_url(
+              query: Url.query(type:, status:, p: @pages),
+              request:
+            ) unless @page == @pages
 
             @run_logs = run_logs_query.limit(limit).offset(offset).all
 
@@ -74,10 +84,10 @@ module Termin
               query.where(where).limit(1).select(:id).get(:id)
             end
 
-            query = URI.encode_www_form(type:, status:)
-            @index_path = Url.index_url(query:)
-            @next_path = Url.run_url(next_id, query:) unless next_id.nil?
-            @previous_path = Url.run_url(previous_id, query:) unless previous_id.nil?
+            query = Url.query(type:, status:)
+            @index_path = Url.index_url(query:, request:)
+            @next_path = Url.run_url(next_id, query:, request:) unless next_id.nil?
+            @previous_path = Url.run_url(previous_id, query:, request:) unless previous_id.nil?
 
             erb :run
           end
