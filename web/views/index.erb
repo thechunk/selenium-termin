@@ -30,8 +30,8 @@
   <thead>
     <tr>
       <th scope="col">id</th>
-      <th scope="col">start_at</th>
-      <th scope="col">duration (s)</th>
+      <th scope="col">start</th>
+      <th scope="col" class="sm-hidden">time</th>
       <th scope="col">type</th>
       <th scope="col">status</th>
     </tr>
@@ -43,8 +43,8 @@
         <th scope="row">
           <a href="<%= url("/run/#{log[:id]}") %>?<%= URI.encode_www_form(type: request.params['type'], status: request.params['status'])%>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
         </td>
-        <td><%= log[:start_at].strftime('%y.%m.%d %H:%M')  %></td>
-        <td>
+        <td><%= log[:start_at].strftime('%m.%d %H:%M')  %></td>
+        <td class="sm-hidden">
           <% unless log[:end_at].nil? %>
             <%= (log[:end_at] - log[:start_at]).round(2) %>
           <% end %>

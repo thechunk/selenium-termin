@@ -70,3 +70,5 @@ var/*
 web/public/dist
 node_modules
 supervisord.pid
+secrets/*
+!secrets/.gitkeep

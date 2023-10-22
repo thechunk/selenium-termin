@@ -14,8 +14,10 @@ require 'zeitwerk'
 require 'logger'
 
 module Termin; end
+module Termin::Session; end
 module Termin::Web; end
 loader = Zeitwerk::Loader.new
+loader.push_dir('app/runner', namespace: Termin::Session)
 loader.push_dir('web', namespace: Termin::Web)
 loader.push_dir('lib', namespace: Termin)
 loader.setup

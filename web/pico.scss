@@ -2,6 +2,7 @@
   $enable-semantic-container: true,
   $enable-classes: true
 );
+@import 'npm:@picocss/pico/scss/variables';
 
 iframe {
   width: 100%;
@@ -18,4 +19,8 @@ td, details {
   > code {
     word-break: break-word;
   }
+}
+
+@media all and (max-width: map-get($breakpoints, 'sm')) {
+  .sm-hidden { display: none; }
 }

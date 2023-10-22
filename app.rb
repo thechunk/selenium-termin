@@ -6,7 +6,7 @@ db = Termin::Data::Connection.instance
 db.connect
 db.migrate
 
-token = File.read('./telegramtoken').chomp
+token = File.read(ENV['TELEGRAM_TOKEN_FILE']).chomp
 bot = ::Telegram::Bot::Client.new(token)
 
 notifier = Termin::Telegram::Notifier.instance

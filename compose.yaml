@@ -14,12 +14,14 @@ services:
         - APP_ENV=production
     volumes:
       - ./web/public/logs:/usr/src/app/web/public/logs:z
-      - ./postgres_passwd:/run/secrets/postgres_passwd:z
+      - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
+      - ./secrets/telegram_token:/run/secrets/telegram_token:z
     environment:
       APP_ENV: production
       TZ: Europe/Berlin
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
       POSTGRES_USER: termin
+      TELEGRAM_TOKEN_FILE: /run/secrets/telegram_token
 
   web:
     container_name: termin-web
@@ -30,7 +32,7 @@ services:
       - db
     volumes:
       - ./web/public/logs:/usr/src/app/web/public/logs:z
-      - ./postgres_passwd:/run/secrets/postgres_passwd:z
+      - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
     ports:
       - 4567:4567/tcp
     environment:
@@ -45,7 +47,7 @@ services:
     restart: always
     volumes:
       - ./var/postgresql_data:/var/lib/postgresql/data:z
-      - ./postgres_passwd:/run/secrets/postgres_passwd:z
+      - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
       POSTGRES_USER: termin
