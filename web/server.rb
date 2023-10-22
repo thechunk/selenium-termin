@@ -34,14 +34,14 @@ module Termin
 
             next_id = @page - 1 if @page > 1
             next_query = URI.encode_www_form(type:, status:, p: next_id)
-            @next_path = "/?#{next_query}" unless next_id.nil?
+            @next_path = Url.index_url(query: next_query) unless next_id.nil?
 
             previous_id = @page + 1 if @page < @pages
             previous_query = URI.encode_www_form(type:, status:, p: previous_id)
-            @previous_path = "/?#{previous_query}" unless previous_id.nil?
+            @previous_path = Url.index_url(query: previous_query) unless previous_id.nil?
 
-            @first_path = "/?#{URI.encode_www_form(type:, status:, p: 1)}" unless @page == 1
-            @last_path = "/?#{URI.encode_www_form(type:, status:, p: @pages)}" unless @page == @pages
+            @first_path = Url.index_url(query: URI.encode_www_form(type:, status:, p: 1)) unless @page == 1
+            @last_path = Url.index_url(query: URI.encode_www_form(type:, status:, p: @pages)) unless @page == @pages
 
             @run_logs = run_logs_query.limit(limit).offset(offset).all
 
@@ -75,8 +75,10 @@ module Termin
               .select(:id)
               .get(:id)
 
-            @next_path = "/run/#{next_id}" unless next_id.nil?
-            @previous_path = "/run/#{previous_id}" unless previous_id.nil?
+            query = URI.encode_www_form(type:, status:)
+            @index_path = Url.index_url(query:)
+            @next_path = Url.run_url(next_id, query:) unless next_id.nil?
+            @previous_path = Url.run_url(previous_id, query:) unless previous_id.nil?
 
             erb :run
           end

@@ -10,7 +10,7 @@
       <% end %>
 
       <% unless request.path == '/' %>
-        <li><a href="/">index</a></li>
+        <li><a href="<%= @index_path || '/' %>">index</a></li>
       <% end %>
 
       <% unless @previous_path.nil? %>

@@ -72,3 +72,4 @@ node_modules
 supervisord.pid
 secrets/*
 !secrets/.gitkeep
+.env*.local

@@ -8,7 +8,7 @@ Bundler.setup(:default, ENV['APP_ENV'])
 Bundler.require(:default, ENV['APP_ENV'])
 
 require 'dotenv'
-Dotenv.load(".env.#{env}")
+Dotenv.load(".env.#{env}.local", ".env.#{env}")
 
 require 'zeitwerk'
 require 'logger'
@@ -17,6 +17,8 @@ module Termin; end
 module Termin::Session; end
 module Termin::Web; end
 loader = Zeitwerk::Loader.new
+loader.push_dir('helpers', namespace: Termin)
+loader.push_dir('web', namespace: Termin::Web)
 loader.push_dir('app/runner', namespace: Termin::Session)
 loader.push_dir('web', namespace: Termin::Web)
 loader.push_dir('lib', namespace: Termin)
