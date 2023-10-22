@@ -54,6 +54,7 @@ module Termin
             run_log_id = params['run_log_id']
 
             @log = settings.db.schema[:run_logs].where(id: run_log_id).first
+            halt 404 if @log.nil?
 
             next_id_query = settings.db.schema[:run_logs]
               .where(Sequel.lit('start_at > ?', @log[:start_at]))

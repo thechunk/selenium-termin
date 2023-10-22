@@ -24,7 +24,11 @@
     </tr>
     <tr>
       <th scope="row">time</td>
-      <td><%= (@log[:end_at] - @log[:start_at]).round(2) %></td>
+      <td>
+        <% if @log.key?(:end_at) && @log.key?(:start_at) %>
+          <%= (@log[:end_at] - @log[:start_at]).round(2) %>
+        <% end %>
+      </td>
     </tr>
     <tr>
       <th scope="row">status</td>
