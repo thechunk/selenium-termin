@@ -25,7 +25,7 @@
     <tr>
       <th scope="row">time</td>
       <td>
-        <% if @log.key?(:end_at) && @log.key?(:start_at) %>
+        <% unless @log[:end_at].nil? %>
           <%= (@log[:end_at] - @log[:start_at]).round(2) %>
         <% end %>
       </td>
