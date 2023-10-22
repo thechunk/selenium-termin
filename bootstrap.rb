@@ -1,7 +1,6 @@
 $stdout.sync = true # https://stackoverflow.com/a/42344140
 
-env = ENV['APP_ENV'].to_s || :production
-env = :development unless [:development, :production].include?(env)
+env = ENV['APP_ENV'].to_s
 
 require 'bundler'
 Bundler.setup(:default, ENV['APP_ENV'])

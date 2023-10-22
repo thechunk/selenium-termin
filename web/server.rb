@@ -55,25 +55,23 @@ module Termin
 
             @log = settings.db.schema[:run_logs].where(id: run_log_id).first
 
-            next_id_query = settings.db.schema[:run_logs].where(Sequel.lit('start_at > ?', @log[:start_at]))
-            previous_id_query = settings.db.schema[:run_logs].where(Sequel.lit('start_at < ?', @log[:start_at]))
-
-            next_id_query = next_id_query.where(type:) unless type.nil? || type.empty?
-            next_id_query = next_id_query.where(status:) unless status.nil? || status.empty?
-
-            previous_id_query = previous_id_query.where(type:) unless type.nil? || type.empty?
-            previous_id_query = previous_id_query.where(status:) unless status.nil? || status.empty?
-
-            next_id = next_id_query
+            next_id_query = settings.db.schema[:run_logs]
+              .where(Sequel.lit('start_at > ?', @log[:start_at]))
               .order(:start_at)
-              .limit(1)
-              .select(:id)
-              .get(:id)
-            previous_id = previous_id_query
+            previous_id_query = settings.db.schema[:run_logs]
+              .where(Sequel.lit('start_at < ?', @log[:start_at]))
               .reverse_order(:start_at)
-              .limit(1)
-              .select(:id)
-              .get(:id)
+
+            where = {}
+            [:type, :status].each do |key|
+              next unless params.key?(key.to_s)
+              value = params[key.to_s]
+              where[key] = value unless value.nil? || value.empty?
+            end
+
+            next_id, previous_id = [next_id_query, previous_id_query].map do |query|
+              query.where(where).limit(1).select(:id).get(:id)
+            end
 
             query = URI.encode_www_form(type:, status:)
             @index_path = Url.index_url(query:)
