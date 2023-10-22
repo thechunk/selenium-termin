@@ -7,6 +7,10 @@
       <td><code><%= @log[:session_id] %></code></td>
     </tr>
     <tr>
+      <th scope="row">type</td>
+      <td><code><%= @log[:type] %></code></td>
+    </tr>
+    <tr>
       <th scope="row">last_url</td>
       <td><code><%= @log[:last_url] %></code></td>
     </tr>
@@ -17,6 +21,10 @@
     <tr>
       <th scope="row">end_at</td>
       <td><%= @log[:end_at] %></td>
+    </tr>
+    <tr>
+      <th scope="row">time</td>
+      <td><%= (@log[:end_at] - @log[:start_at]).round(2) %></td>
     </tr>
     <tr>
       <th scope="row">status</td>
