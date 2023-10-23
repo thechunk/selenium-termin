@@ -13,6 +13,7 @@
         <li><strong>🤖 TerminBot</strong></li>
       </ul>
       <ul>
+        <li><a href="<%= ENV['TELEGRAM_BOT_URL'] %>" role="button" class="secondary outline">Telegram</a></li>
         <li><a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(**request.params), request:) %>" role="button" class="contrast">Home</a></li>
       </ul>
     </nav>

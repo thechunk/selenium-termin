@@ -1,8 +1,14 @@
 @use 'node_modules/@picocss/pico/scss/pico' with (
   $enable-semantic-container: true,
-  $enable-classes: true
+  $enable-classes: true,
+  $enable-viewport: false
 );
 @import 'npm:@picocss/pico/scss/variables';
+
+:root {
+  --spacing: 0.75rem;
+  --font-size: 1em;
+}
 
 iframe {
   width: 100%;
@@ -21,10 +27,17 @@ td, details {
   }
 }
 
-body > main > div.split-nav {
+.split-nav, .split-even {
   display: grid;
   grid-column-gap: calc(var(--block-spacing-horizontal) * 3);
+}
+
+.split-nav {
   grid-template-columns: 200px auto;
+}
+
+.split-even {
+  grid-template-columns: 50% auto;
 }
 
 form > .grid > div > a[role="button"] {
@@ -34,7 +47,7 @@ form > .grid > div > a[role="button"] {
 @media all and (max-width: map-get($breakpoints, 'sm')) {
   .sm-hidden { display: none; }
 
-  body > main > div.split-nav {
+  .split-nav, .split-even {
     display: block;
   }
 }

@@ -1,19 +1,17 @@
 <section align="center">
-  <% unless @total == 0 %>
-    <nav>
-      <ul>
-        <% unless @first_path.nil? %>
-          <li><a <% unless @first_path.empty? %>href="<%= @first_path %>"<% end %> role="button" class="secondary">⇤</a></li>
-        <% end %>
-        <li><a <% unless @next_path.nil? %>href="<%= @next_path %>"<% end %> role="button" class="outline secondary">←</a></li>
+  <nav>
+    <ul>
+      <% unless @first_path.nil? %>
+        <li><a <% unless @first_path.empty? %>href="<%= @first_path %>"<% end %> role="button" class="secondary">⇤</a></li>
+      <% end %>
+      <li><a <% unless @next_path.nil? %>href="<%= @next_path %>"<% end %> role="button" class="outline secondary">←</a></li>
 
-        <li><a <% unless @previous_path.nil? %>href="<%= @previous_path %>"<% end %> role="button" class="outline secondary">→</a></li>
-        <% unless @last_path.nil? %>
-          <li><a <% unless @last_path.empty? %>href="<%= @last_path %>"<% end %> role="button" class="secondary">⇥</a></li>
-        <% end %>
-      </ul>
-    </nav>
-  <% end %>
+      <li><a <% unless @previous_path.nil? %>href="<%= @previous_path %>"<% end %> role="button" class="outline secondary">→</a></li>
+      <% unless @last_path.nil? %>
+        <li><a <% unless @last_path.empty? %>href="<%= @last_path %>"<% end %> role="button" class="secondary">⇥</a></li>
+      <% end %>
+    </ul>
+  </nav>
 
   <% unless @page.nil? || @pages.nil? %>
     <small>

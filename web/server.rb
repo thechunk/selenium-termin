@@ -56,7 +56,7 @@ module Termin
             @last_path = Url.index_url(
               query: Url.query(type:, status:, p: @pages),
               request:
-            ) unless @page == @pages
+            ) unless @page == @pages || @total == 0
 
             @running_logs, @run_logs = run_logs_query.limit(limit).offset(offset).all
               .partition { |v| v[:status] == Session::RunType::STARTED }
@@ -69,7 +69,10 @@ module Termin
             status = params['status']
             run_log_id = params['run_log_id']
 
-            @log = settings.db.schema[:run_logs].where(id: run_log_id).first
+            @log = settings.db.schema[:run_logs]
+              .where(id: run_log_id)
+              .exclude(status: Session::RunType::STARTED)
+              .first
             halt 404 if @log.nil?
 
             next_id_query = settings.db.schema[:run_logs]
@@ -117,6 +120,7 @@ module Termin
             halt 404 if @log.nil?
 
             file_path = @log["#{File.basename(file, '.png')}_path".to_sym]
+            halt 404 if file_path.nil?
 
             send_file(file_path, type: types[file], disposition: :inline)
           end

@@ -5,13 +5,13 @@
         <summary>Type</summary>
         <ul>
           <li>
-            <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(status: request.params['status']), request:) %>">
+            <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(status: request.params['status']), request:) %>" <% if params['type'].nil? %>class="contrast"<% end %>>
               All
             </a>
           </li>
           <% @run_types.each do |run_type| %>
             <li>
-              <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: run_type, status: request.params['status']), request:) %>">
+              <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: run_type, status: request.params['status']), request:) %>" <% if params['type'] == run_type %>class="contrast"<% end %>>
                 <%= run_type %>
               </a>
             </li>
@@ -107,11 +107,9 @@
               </td>
 
               <td>
-                <code>
-                  <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: log[:type], status: request.params['status']), request:) %>">
-                    <%= log[:type] %>
-                  </a>
-                </code>
+                <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: log[:type], status: request.params['status']), request:) %>">
+                  <%= log[:type] %>
+                </a>
               </td>
 
               <td>

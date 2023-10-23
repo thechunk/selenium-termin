@@ -1,63 +1,69 @@
 <%= erb :pager %>
 
-<table>
-  <tbody>
-    <tr>
-      <th scope="row">session_id</td>
-      <td><code><%= @log[:session_id] %></code></td>
-    </tr>
-    <tr>
-      <th scope="row">type</td>
-      <td><code><%= @log[:type] %></code></td>
-    </tr>
-    <tr>
-      <th scope="row">last_url</td>
-      <td><code><%= @log[:last_url] %></code></td>
-    </tr>
-    <tr>
-      <th scope="row">start_at</td>
-      <td><%= @log[:start_at] %></td>
-    </tr>
-    <tr>
-      <th scope="row">end_at</td>
-      <td><%= @log[:end_at] %></td>
-    </tr>
-    <tr>
-      <th scope="row">time</td>
-      <td>
-        <% unless @log[:end_at].nil? %>
-          <%= (@log[:end_at] - @log[:start_at]).round(2) %>
+<div class="split-even">
+  <div>
+    <table>
+      <tbody>
+        <tr>
+          <th scope="row">session_id</td>
+          <td><code><%= @log[:session_id] %></code></td>
+        </tr>
+        <tr>
+          <th scope="row">type</td>
+          <td><code><%= @log[:type] %></code></td>
+        </tr>
+        <tr>
+          <th scope="row">last_url</td>
+          <td><code><%= @log[:last_url] %></code></td>
+        </tr>
+        <tr>
+          <th scope="row">start_at</td>
+          <td><%= @log[:start_at] %></td>
+        </tr>
+        <tr>
+          <th scope="row">end_at</td>
+          <td><%= @log[:end_at] %></td>
+        </tr>
+        <tr>
+          <th scope="row">time</td>
+          <td>
+            <% unless @log[:end_at].nil? %>
+              <%= (@log[:end_at] - @log[:start_at]).round(2) %>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">status</td>
+          <td><%= @log[:status] %></td>
+        </tr>
+
+        <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
+          <tr>
+            <th><%= log_type %></th>
+            <td><a href="<%= Termin::Web::Url.run_file_url(@log[:id], log_type) %>">download</a></td>
+          </tr>
         <% end %>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row">status</td>
-      <td><%= @log[:status] %></td>
-    </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
-      <tr>
-        <th><%= log_type %></th>
-        <td><a href="<%= Termin::Web::Url.run_file_url(@log[:id], log_type) %>">download</a></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div>
+    <details open>
+      <summary>error</summary>
+      <% unless @log[:error].nil? %>
+        <code><%= CGI::escapeHTML(@log[:error]) %></code>
+      <% end %>
+    </details>
 
-<details open>
-  <summary>error</summary>
-  <% unless @log[:error].nil? %>
-    <code><%= CGI::escapeHTML(@log[:error]) %></code>
-  <% end %>
-</details>
+    <details>
+      <summary>last_screenshot</summary>
+      <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
+    </details>
 
-<details>
-  <summary>last_screenshot</summary>
-  <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
-</details>
-
-<details>
-  <summary>page_source</summary>
-  <iframe src="<%= Termin::Web::Url.run_file_url(@log[:id], 'page_source') %>"></iframe>
-  </summary>
-</details>
+    <details>
+      <summary>page_source</summary>
+      <iframe src="<%= Termin::Web::Url.run_file_url(@log[:id], 'page_source') %>"></iframe>
+      </summary>
+    </details>
+  </div>
+</div>
