@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="/dist/css/default.css">
   </head>
   <body>
+    <nav class="container-fluid">
+      <ul>
+        <li><strong>🤖 TerminBot</strong></li>
+      </ul>
+      <ul>
+        <li><a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(**request.params), request:) %>" role="button" class="contrast">Home</a></li>
+      </ul>
+    </nav>
+
     <main>
       <%= yield %>
     </main>

@@ -1,35 +1,27 @@
 <section align="center">
-  <nav>
-    <ul>
-      <% unless @first_path.nil? %>
-        <li><a href="<%= @first_path %>">first</a></li>
-      <% end %>
+  <% unless @total == 0 %>
+    <nav>
+      <ul>
+        <% unless @first_path.nil? %>
+          <li><a <% unless @first_path.empty? %>href="<%= @first_path %>"<% end %> role="button" class="secondary">⇤</a></li>
+        <% end %>
+        <li><a <% unless @next_path.nil? %>href="<%= @next_path %>"<% end %> role="button" class="outline secondary">←</a></li>
 
-      <% unless @next_path.nil? %>
-        <li><a href="<%= @next_path %>">newer</a></li>
-      <% end %>
-
-      <% unless request.path == '/' %>
-        <li><a href="<%= @index_path || '/' %>">index</a></li>
-      <% end %>
-
-      <% unless @previous_path.nil? %>
-        <li><a href="<%= @previous_path %>">older</a></li>
-      <% end %>
-
-      <% unless @last_path.nil? %>
-        <li><a href="<%= @last_path %>">last</a></li>
-      <% end %>
-    </ul>
-  </nav>
+        <li><a <% unless @previous_path.nil? %>href="<%= @previous_path %>"<% end %> role="button" class="outline secondary">→</a></li>
+        <% unless @last_path.nil? %>
+          <li><a <% unless @last_path.empty? %>href="<%= @last_path %>"<% end %> role="button" class="secondary">⇥</a></li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
 
   <% unless @page.nil? || @pages.nil? %>
     <small>
       <%= @page %>
       /
-      <%= @pages %>
+      <%= [1, @pages].max %>
 
-      <% unless @total.nil? %>
+      <% unless @total.nil? || @total == 0 %>
         (<%= @total %>)
       <% end %>
     </small>

@@ -22,7 +22,9 @@ module Termin
             halt 400 if @page < 1
 
             @run_types = settings.db.schema[:run_logs].distinct(:type).select_map(:type)
-            @run_statuses = settings.db.schema[:run_logs].distinct(:status).select_map(:status)
+            @run_statuses = Session::RunType.constants
+              .reject { |const| const == :STARTED }
+              .map { |const| Session::RunType.const_get(const) }
 
             run_logs_query = settings.db.schema[:run_logs].reverse_order(:start_at)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
@@ -44,16 +46,20 @@ module Termin
               request:
             ) unless previous_id.nil?
 
+            @first_path = ''
             @first_path = Url.index_url(
               query: Url.query(type:, status:, p: 1),
               request:
             ) unless @page == 1
+
+            @last_path = ''
             @last_path = Url.index_url(
               query: Url.query(type:, status:, p: @pages),
               request:
             ) unless @page == @pages
 
-            @run_logs = run_logs_query.limit(limit).offset(offset).all
+            @running_logs, @run_logs = run_logs_query.limit(limit).offset(offset).all
+              .partition { |v| v[:status] == Session::RunType::STARTED }
 
             erb :index
           end
@@ -81,11 +87,13 @@ module Termin
             end
 
             next_id, previous_id = [next_id_query, previous_id_query].map do |query|
-              query.where(where).limit(1).select(:id).get(:id)
+              query.where(where).exclude(status: Session::RunType::STARTED)
+                .limit(1)
+                .select(:id)
+                .get(:id)
             end
 
             query = Url.query(type:, status:)
-            @index_path = Url.index_url(query:, request:)
             @next_path = Url.run_url(next_id, query:, request:) unless next_id.nil?
             @previous_path = Url.run_url(previous_id, query:, request:) unless previous_id.nil?
 

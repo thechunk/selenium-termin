@@ -13,8 +13,6 @@ module Termin
       end
 
       def call
-        vnc_url = 'http://localhost:7900/?autoconnect=1&resize=scale&password=secret'
-        @logger.debug("VNC: #{vnc_url}")
         @logger.debug("log_data_path: #{@log_data_path}")
 
         @runner_thread = Thread.fork do
@@ -42,7 +40,7 @@ module Termin
         run_log_id = @db.schema[:run_logs].insert(
           session_id:,
           start_at: DateTime.now,
-          status: 'started',
+          status: Session::RunType::STARTED,
           type: run_type
         )
         run_log_data = {}
@@ -51,16 +49,16 @@ module Termin
           @logger.debug("Run starting: #{run_type}")
           session = klass.new(driver: driver_connection.driver)
           session.call
-          run_log_data[:status] = 'success'
+          run_log_data[:status] = Session::RunType::SUCCESS
           run_log_data[:keep] = true
         rescue Session::RunFailError => e
           @logger.error("Runner failed: #{e.full_message}")
           run_log_data[:error] = e.full_message
-          run_log_data[:status] = 'fail'
+          run_log_data[:status] = Session::RunType::FAIL
         rescue Exception => e
           @logger.error("Unexpected error: #{e.full_message}")
           run_log_data[:error] = e.full_message
-          run_log_data[:status] = 'error'
+          run_log_data[:status] = Session::RunType::ERROR
           run_log_data[:keep] = true
         ensure
           log_data.each do |key, entries|
@@ -79,9 +77,9 @@ module Termin
           ))
 
           case run_log_data[:status]
-          when 'error'
+          when Session::RunType::ERROR
             @notifier.broadcast(text: "Run failed unexpectedly: #{ENV['BASE_URL']}/run/#{run_log_id}")
-          when 'success'
+          when Session::RunType::SUCCESS
             @notifier.broadcast(text: "Run successful: #{ENV['BASE_URL']}/run/#{run_log_id}")
           end
         end
@@ -91,8 +89,11 @@ module Termin
         @runner_thread.exit
 
         @logger.debug("User interrupt: #{@session_id}")
-        @db.schema[:run_logs].where(session_id: @session_id, status: 'started').update(
-          status: 'interrupt',
+        @db.schema[:run_logs].where(
+          session_id: @session_id,
+          status: Session::RunType::STARTED
+        ).update(
+          status: Session::RunType::INTERRUPT,
           end_at: DateTime.now
         )
 
@@ -106,8 +107,8 @@ module Termin
       private
 
       def cleanup_hung
-        @db.schema[:run_logs].where(status: 'started')
-          .update(status: 'interrupt', end_at: DateTime.now)
+        @db.schema[:run_logs].where(status: Session::RunType::STARTED)
+          .update(status: Session::RunType::INTERRUPT, end_at: DateTime.now)
       end
 
       def prune(keep_only: 0)
@@ -135,7 +136,13 @@ module Termin
             log_data_path = "#{@log_data_path}/#{run_log[:session_id]}"
             @logger.info("Deleting files in: #{log_data_path}")
 
-            [:last_screenshot_path, :page_source_path, :console_events_path, :network_events_path, :driver_events_path].each do |file|
+            [
+              :last_screenshot_path,
+              :page_source_path,
+              :console_events_path,
+              :network_events_path,
+              :driver_events_path
+            ].each do |file|
               next if run_log[file].nil? || run_log[file].empty?
               File.unlink(run_log[file])
             rescue Errno::ENOENT
@@ -186,7 +193,9 @@ module Termin
       def write_log_text(session_id, type, ext: '', &blk)
         ext = ".#{ext}" unless ext.empty?
 
-        write_log_file(session_id, type, ext:) { |log_data_path| File.open("#{log_data_path}/#{type.to_s}#{ext}", 'w', &blk) }
+        write_log_file(session_id, type, ext:) do |log_data_path|
+          File.open("#{log_data_path}/#{type.to_s}#{ext}", 'w', &blk)
+        end
       end
     end
   end

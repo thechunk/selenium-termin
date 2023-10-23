@@ -21,6 +21,20 @@ td, details {
   }
 }
 
+body > main > div.split-nav {
+  display: grid;
+  grid-column-gap: calc(var(--block-spacing-horizontal) * 3);
+  grid-template-columns: 200px auto;
+}
+
+form > .grid > div > a[role="button"] {
+  width: 100%;
+}
+
 @media all and (max-width: map-get($breakpoints, 'sm')) {
   .sm-hidden { display: none; }
+
+  body > main > div.split-nav {
+    display: block;
+  }
 }
