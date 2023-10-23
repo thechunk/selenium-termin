@@ -9,7 +9,7 @@ module Termin
 
         @runner_thread = nil
 
-        @log_data_path = "#{File.expand_path(Dir.pwd)}/web/public/logs"
+        @log_data_path = "#{File.expand_path(Dir.pwd)}/var/log_data"
       end
 
       def call
@@ -132,13 +132,12 @@ module Termin
           to_delete_ids = []
 
           to_delete.each do |run_log|
-            public_path = "#{File.expand_path(Dir.pwd)}/web/public"
             log_data_path = "#{@log_data_path}/#{run_log[:session_id]}"
             @logger.info("Deleting files in: #{log_data_path}")
 
             [:last_screenshot_path, :page_source_path, :console_events_path, :network_events_path, :driver_events_path].each do |file|
               next if run_log[file].nil? || run_log[file].empty?
-              File.unlink("#{public_path}/#{run_log[file]}")
+              File.unlink(run_log[file])
             rescue Errno::ENOENT
               @logger.debug("File not found: #{run_log[file]}")
             rescue Errno::ENOTEMPTY
@@ -176,13 +175,12 @@ module Termin
 
       def write_log_file(session_id, type, ext: '', &blk)
         log_data_path = "#{@log_data_path}/#{session_id}"
-        rel_data_path = "logs/#{session_id}"
         ext = ".#{ext}" unless ext.empty?
 
         Dir.mkdir(log_data_path) unless Dir.exist?(log_data_path)
         blk.call(log_data_path)
 
-        "#{rel_data_path}/#{type.to_s}#{ext}"
+        "#{log_data_path}/#{type.to_s}#{ext}"
       end
 
       def write_log_text(session_id, type, ext: '', &blk)

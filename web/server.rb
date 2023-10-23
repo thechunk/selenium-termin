@@ -91,6 +91,27 @@ module Termin
 
             erb :run
           end
+
+          get '/run/:run_log_id/:file' do
+            run_log_id = params['run_log_id']
+            file = params['file']
+
+            types = {
+              'last_screenshot.png' => :png,
+              'page_source' => :html,
+              'console_events' => :txt,
+              'network_events' => :txt,
+              'driver_events' => :txt
+            }
+            halt 404 unless types.key?(file)
+
+            @log = settings.db.schema[:run_logs].where(id: run_log_id).first
+            halt 404 if @log.nil?
+
+            file_path = @log["#{File.basename(file, '.png')}_path".to_sym]
+
+            send_file(file_path, type: types[file], disposition: :inline)
+          end
         end
 
         @server.run!

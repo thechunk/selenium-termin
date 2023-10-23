@@ -14,6 +14,7 @@ services:
         - APP_ENV=production
     volumes:
       - ./web/public/logs:/usr/src/app/web/public/logs:z
+      - ./var/log_data:/usr/src/app/var/log_data:z
       - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
       - ./secrets/telegram_token:/run/secrets/telegram_token:z
     environment:
@@ -32,6 +33,7 @@ services:
       - db
     volumes:
       - ./web/public/logs:/usr/src/app/web/public/logs:z
+      - ./var/log_data:/usr/src/app/var/log_data:z
       - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
     ports:
       - 4567:4567/tcp

@@ -21,6 +21,10 @@ module Termin
           url_for(path: "/run/#{id}", query:, request:)
         end
 
+        def run_file_url(id, file, request: nil)
+          url_for(path: "/run/#{id}/#{file}", request:)
+        end
+
         def query(**opts)
           URI.encode_www_form(opts.reject { |k, v| v.nil? || v.to_s.empty? })
         end

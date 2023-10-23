@@ -38,11 +38,7 @@
     <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
       <tr>
         <th><%= log_type %></th>
-        <td>
-          <% unless @log["#{log_type}_path".to_sym].nil? %>
-            <a href="/<%= @log["#{log_type}_path".to_sym] %>">download</a>
-          <% end %>
-        </td>
+        <td><a href="<%= Termin::Web::Url.run_file_url(@log[:id], log_type) %>">download</a></td>
       </tr>
     <% end %>
   </tbody>
@@ -57,19 +53,11 @@
 
 <details>
   <summary>last_screenshot</summary>
-  <% unless @log[:last_screenshot_path].nil? %>
-    <figure>
-      <img src="/<%= @log[:last_screenshot_path] %>" />
-    </figure>
-  <% end %>
+  <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
 </details>
 
 <details>
   <summary>page_source</summary>
-  <% unless @log[:page_source_path].nil? %>
-    <% File.open("#{Dir.pwd}/web/public/#{@log[:page_source_path]}", 'r') do |f| %>
-      <iframe srcdoc="<% f.each_line do |l| %><%= CGI.escapeHTML(l) %><% end %>"></iframe>
-    <% end %>
-  <% end %>
+  <iframe src="<%= Termin::Web::Url.run_file_url(@log[:id], 'page_source') %>"></iframe>
   </summary>
 </details>
