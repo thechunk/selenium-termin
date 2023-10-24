@@ -24,28 +24,6 @@
   <section>
     <%= erb :pager %>
 
-    <form method="get">
-      <div class="grid">
-        <div>
-          <select name="status" title="status" onchange="this.form.submit()">
-            <option value="">All</option>
-            <% @run_statuses.each do |run_status| %>
-              <option value="<%= run_status %>" <% if params['status'] == run_status %>selected<% end %>><%= run_status %></option>
-            <% end %>
-          </select>
-        </div>
-
-        <div>
-          <input type="hidden" name="type" value="<%= request.params['type'] %>">
-          <input type="submit" value="Filter">
-        </div>
-
-        <div>
-          <a href="<%= Termin::Web::Url.index_url(query: nil, request: request) %>" role="button" class="outline">Reset</a>
-        </div>
-      </div>
-    </form>
-
     <% @running_logs.each do |log| %>
       <article>
         <header aria-busy="true" align="center"><%= log[:status] %></header>
@@ -76,6 +54,28 @@
         </footer>
       </article>
     <% end %>
+
+    <form method="get">
+      <div class="grid">
+        <div>
+          <select name="status" title="status" onchange="this.form.submit()">
+            <option value="">All</option>
+            <% @run_statuses.each do |run_status| %>
+              <option value="<%= run_status %>" <% if params['status'] == run_status %>selected<% end %>><%= run_status %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <div>
+          <input type="hidden" name="type" value="<%= request.params['type'] %>">
+          <input type="submit" value="Filter">
+        </div>
+
+        <div>
+          <a href="<%= Termin::Web::Url.index_url(query: nil, request: request) %>" role="button" class="outline">Reset</a>
+        </div>
+      </div>
+    </form>
 
     <% if @run_logs.empty? %>
       <article>

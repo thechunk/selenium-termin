@@ -10,11 +10,7 @@
         </tr>
         <tr>
           <th scope="row">type</td>
-          <td><code><%= @log[:type] %></code></td>
-        </tr>
-        <tr>
-          <th scope="row">last_url</td>
-          <td><code><%= @log[:last_url] %></code></td>
+          <td><%= @log[:type] %></td>
         </tr>
         <tr>
           <th scope="row">start_at</td>
@@ -35,6 +31,11 @@
         <tr>
           <th scope="row">status</td>
           <td><%= @log[:status] %></td>
+        </tr>
+
+        <tr>
+          <th scope="row">last_url</td>
+          <td><code><%= @log[:last_url] %></code></td>
         </tr>
 
         <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
