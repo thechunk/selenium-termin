@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TerminBot<% unless @title.nil? || @title.empty? %> - <%= @title %><% end %></title>
+    <title><%= t.brand.termin_bot %><% unless @title.nil? || @title.empty? %> - <%= @title %><% end %></title>
     <link rel="stylesheet" href="/dist/css/default.css">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -17,12 +17,20 @@
           <img class="logo dark-hidden" title="Berlin" src="/img/logo_berlin_m_srgb.svg" alt="Berlin">
           <img class="logo light-hidden" title="Berlin" src="/img/logo_berlin_m_negativ.svg" alt="Berlin">
           <span class="md-hidden">🤖</span>
-          <strong class="sm-hidden">TerminBot</strong>
+          <strong class="sm-hidden"><%= t.brand.termin_bot %></strong>
         </li>
       </ul>
       <ul>
-        <li><a href="<%= ENV['TELEGRAM_BOT_URL'] %>" role="button" class="secondary outline">Telegram</a></li>
-        <li><a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(**request.params), request:) %>" role="button" class="contrast">Runs</a></li>
+        <li>
+          <a href="<%= ENV['TELEGRAM_BOT_URL'] %>" role="button" class="secondary outline">
+            <%= t.nav.telegram %>
+          </a>
+        </li>
+        <li>
+          <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(**request.params), request:) %>" role="button" class="contrast">
+            <%= t.nav.index %>
+          </a>
+        </li>
       </ul>
     </nav>
 

@@ -4,6 +4,9 @@ module Termin
       def initialize(db:)
         @server = Sinatra.new do
           configure do
+            register Sinatra::R18n
+            R18n.default_places { './i18n' }
+
             set :bind, '0.0.0.0'
             set :port, 4567
             set :db, db
