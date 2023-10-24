@@ -26,6 +26,10 @@ module Termin
               .reject { |const| const == :STARTED }
               .map { |const| Session::RunType.const_get(const) }
 
+            halt 400 unless type.nil? || @run_types.include?(type)
+
+            @title = type unless type.nil? || type.empty?
+
             run_logs_query = settings.db.schema[:run_logs].reverse_order(:start_at)
             run_logs_query = run_logs_query.where(type:) if @run_types.include?(type)
             run_logs_query = run_logs_query.where(status:) if @run_statuses.include?(status)

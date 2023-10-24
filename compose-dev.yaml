@@ -3,7 +3,7 @@ services:
     container_name: termin-runner-dev
     image: rcheung/termin_base:0.0.1-1-DEV
     restart: always
-    command: bash -c "bundle install && ruby app.rb"
+    command: bash -c "bundle install && rerun -b --ignore 'web/**/*' 'ruby app.rb'"
     depends_on:
       - grid
       - db

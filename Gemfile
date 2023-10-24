@@ -13,4 +13,5 @@ gem 'telegram-bot-ruby', '~> 1.0', require: 'telegram/bot'
 
 group :development do
   gem 'pry'
+  gem 'rerun'
 end

@@ -86,8 +86,6 @@ module Termin
       end
 
       def destroy
-        @runner_thread.exit
-
         @logger.debug("User interrupt: #{@session_id}")
         @db.schema[:run_logs].where(
           session_id: @session_id,
@@ -102,6 +100,8 @@ module Termin
         rescue Exception => e
           puts "Selenium session already ended: #{e.message}"
         end
+
+        @runner_thread.exit
       end
 
       private

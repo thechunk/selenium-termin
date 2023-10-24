@@ -55,16 +55,18 @@
         <code><%= CGI::escapeHTML(@log[:error]) %></code>
       <% end %>
     </details>
-
-    <details>
-      <summary>last_screenshot</summary>
-      <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
-    </details>
-
-    <details>
-      <summary>page_source</summary>
-      <iframe src="<%= Termin::Web::Url.run_file_url(@log[:id], 'page_source') %>"></iframe>
-      </summary>
-    </details>
   </div>
+</div>
+
+<div>
+  <details>
+    <summary>last_screenshot</summary>
+    <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
+  </details>
+
+  <details>
+    <summary>page_source</summary>
+    <iframe src="<%= Termin::Web::Url.run_file_url(@log[:id], 'page_source') %>"></iframe>
+    </summary>
+  </details>
 </div>
