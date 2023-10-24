@@ -38,6 +38,23 @@ td, details {
 
 .split-even {
   grid-template-columns: 50% auto;
+
+  > div:last-child {
+    position: relative;
+    margin-bottom: calc(var(--spacing) * 2);
+
+    > details {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      padding-bottom: calc(var(--spacing) * 3);
+
+      > code {
+        height: 100%;
+        overflow: auto;
+      }
+    }
+  }
 }
 
 form > .grid > div > a[role="button"] {
@@ -49,5 +66,24 @@ form > .grid > div > a[role="button"] {
 
   .split-nav, .split-even {
     display: block;
+  }
+
+  .split-even {
+    > div:last-child {
+      position: static;
+      margin-bottom: 0;
+
+      > details {
+        position: static;
+        width: auto;
+        height: none;
+        padding-bottom: calc(var(--spacing));
+
+        > code {
+          height: auto;
+          overflow: auto;
+        }
+      }
+    }
   }
 }
