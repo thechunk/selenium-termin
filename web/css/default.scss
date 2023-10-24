@@ -27,6 +27,17 @@ td, details {
   }
 }
 
+nav .logo {
+  display: inline-block;
+  height: 24px;
+  margin-right: 0.3rem;
+}
+nav {
+  strong, span {
+    vertical-align: middle;
+  }
+}
+
 .split-nav, .split-even {
   display: grid;
   grid-column-gap: calc(var(--block-spacing-horizontal) * 3);
@@ -61,6 +72,9 @@ form > .grid > div > a[role="button"] {
   width: 100%;
 }
 
+@media all and (min-width: map-get($breakpoints, 'sm')) {
+  .md-hidden { display: none; }
+}
 @media all and (max-width: map-get($breakpoints, 'sm')) {
   .sm-hidden { display: none; }
 
@@ -86,4 +100,11 @@ form > .grid > div > a[role="button"] {
       }
     }
   }
+}
+
+@media only screen and (prefers-color-scheme: dark) {
+  body .dark-hidden { display: none; }
+}
+@media only screen and (prefers-color-scheme: light) {
+  body .light-hidden { display: none; }
 }

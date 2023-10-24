@@ -6,11 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>TerminBot<% unless @title.nil? || @title.empty? %> - <%= @title %><% end %></title>
     <link rel="stylesheet" href="/dist/css/default.css">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/berlin_de.svg" type="image/svg+xml">
   </head>
   <body>
     <nav class="container-fluid">
       <ul>
-        <li><strong>🤖 TerminBot</strong></li>
+        <li>
+          <img class="logo dark-hidden" title="Berlin" src="/img/logo_berlin_m_srgb.svg" alt="Berlin">
+          <img class="logo light-hidden" title="Berlin" src="/img/logo_berlin_m_negativ.svg" alt="Berlin">
+          <span class="md-hidden">🤖</span>
+          <strong class="sm-hidden">TerminBot</strong>
+        </li>
       </ul>
       <ul>
         <li><a href="<%= ENV['TELEGRAM_BOT_URL'] %>" role="button" class="secondary outline">Telegram</a></li>
