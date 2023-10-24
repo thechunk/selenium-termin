@@ -26,7 +26,7 @@ module Termin
               .reject { |const| const == :STARTED }
               .map { |const| Session::RunType.const_get(const) }
 
-            halt 400 unless type.nil? || @run_types.include?(type)
+            halt 400 unless type.nil? || type.empty? || @run_types.include?(type)
 
             @title = type unless type.nil? || type.empty?
 
