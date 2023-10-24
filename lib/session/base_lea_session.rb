@@ -83,6 +83,9 @@ module Termin
         bypass_captcha
 
         click(id: 'applicationForm:managedForm:proceed')
+
+        loading_wait
+        wait_for_element(name: 'antragsteller_vname')
       end
 
       def bypass_captcha
