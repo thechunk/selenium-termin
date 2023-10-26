@@ -137,9 +137,9 @@ module Termin
           end
 
           get '/status/:service' do
-            result = Infra::Services.status(:selenium)
+            service = params['service'].to_sym
 
-            erb :status, layout: false, locals: {result:}
+            erb :status, layout: false, locals: { service: }
           end
         end
 

@@ -53,7 +53,11 @@ service:
   status:
     title: 'Services'
   messages:
-    busy: '%1 busy'
-    ready: '%1 ready'
-    unreachable: '%1 unreachable'
-    error: '%1 invalid state'
+    busy: 'Busy'
+    ready: 'Ready'
+    unreachable: 'Unreachable'
+    error: 'Invalid state'
+  selenium:
+    title: 'Selenium'
+    vnc_cta: 'VNC'
+    dash_cta: 'Dashboard'

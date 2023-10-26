@@ -21,16 +21,7 @@
 
       <details open>
         <summary><%= t.service.status.title %></summary>
-        <ul>
-          <li>
-            <div
-                hx-get="<%= Termin::Web::Url.status_url('selenium', request:) %>"
-                hx-trigger="every 5s"
-                hx-on="htmx:afterSettle:window.configure()">
-                <%= erb :status, layout: false, locals: { result: Termin::Infra::Services.status(:selenium) } %>
-            </div>
-          </li>
-        </ul>
+        <%= erb :status, layout: false, locals: { service: :selenium } %>
       </details>
     </nav>
   </aside>
@@ -52,20 +43,6 @@
             <% end %>
           </tbody>
         </table>
-
-        <footer align="center">
-          <nav>
-            <ul>
-              <li>
-                <a href="<%= ENV['VNC_URL'] %>" role="button" class="secondary outline" target="_blank">VNC</a>
-              </li>
-
-              <li>
-                <a href="<%= ENV['SELENIUM_URL'] %>" role="button" class="secondary outline" target="_blank">Selenium</a>
-              </li>
-            </ul>
-          </nav>
-        </footer>
       </article>
     <% end %>
 

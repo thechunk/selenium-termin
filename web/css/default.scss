@@ -53,6 +53,50 @@ nav {
   td {
     white-space: nowrap;
   }
+
+  nav {
+    dl {
+      margin: var(--nav-element-spacing-vertical) 0 0;
+      padding: 0;
+
+      dt, dd {
+        @extend small;
+        margin: 0;
+
+        code {
+          word-break: break-word;
+        }
+      }
+    }
+
+    header dl {
+      margin: 0;
+    }
+
+    header dt, header dd {
+      display: inline;
+      vertical-align: top;
+    }
+
+    header dd {
+      float: right;
+    }
+
+    article {
+      margin: calc(var(--nav-element-spacing-vertical) * .5) 0;
+      padding: calc(var(--nav-element-spacing-vertical) * .5) var(--nav-element-spacing-horizontal);
+
+      header {
+        margin: calc(var(--nav-element-spacing-vertical) * -.5) calc(var(--nav-element-spacing-horizontal) * -1);
+        padding: var(--nav-link-spacing-vertical) calc(var(--nav-element-spacing-horizontal));
+      }
+
+      footer {
+        margin: calc(var(--nav-element-spacing-vertical) * 0.5) calc(var(--nav-element-spacing-horizontal) * -1) calc(var(--nav-element-spacing-vertical) * -.5) ;
+        padding: var(--nav-link-spacing-vertical) calc(var(--nav-element-spacing-horizontal));
+      }
+    }
+  }
 }
 
 .split-even {

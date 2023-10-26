@@ -1,18 +1,55 @@
-<% if result.nil? %>
-  <i data-feather="alert-circle" class="status error"></i>
-  <%= t.service.messages.unreachable('Selenium') %>
-<% else %>
-  <% case result['value']['ready'] when true %>
-    <i data-feather="check-circle" class="status success"></i>
-    <%= t.service.messages.ready('Selenium') %>
-  <% when false %>
-    <i data-feather="x-circle" class="status warn"></i>
-    <%= t.service.messages.busy('Selenium') %>
-    <hr>
+<% result = Termin::Infra::Services.status(service) %>
+<article
+  hx-get="<%= Termin::Web::Url.status_url(service, request:) %>"
+  hx-trigger="every 5s"
+  hx-on="htmx:afterSettle:window.configure()"
+  hx-swap="outerHTML">
+  <header>
+    <dl>
+      <dt><%= t.service[result.service].title %></dt>
+      <dd>
+        <% if result.nil? %>
+          <i data-feather="alert-circle" class="status error"></i>
+          <%= t.service.messages.error %>
+        <% else %>
+          <% if result.reachable %>
+            <% if result.ready %>
+              <i data-feather="check-circle" class="status success"></i>
+              <%= t.service.messages.ready %>
+            <% else %>
+              <i data-feather="x-circle" class="status warn"></i>
+              <%= t.service.messages.busy %>
+            <% end %>
+          <% else %>
+            <i data-feather="alert-circle" class="status error"></i>
+            <%= t.service.messages.unreachable %>
+          <% end %>
+        <% end %>
+      </dd>
+    </dl>
+  </header>
 
-    <small><%= result['value']['nodes'][0]['slots'].first.dig('session', 'sessionId') %></small>
-  <% else %>
-    <i data-feather="alert-circle" class="status error"></i>
-    <%= t.service.messages.error('Selenium') %>
+  <% unless result.extra.nil? %>
+    <dl>
+      <% result.extra.reject{|k, v| v[:type] == :href}.each do |key, value| %>
+        <dt><strong><%= key %></strong></dt>
+        <dd>
+          <% case value[:type] when :code %>
+            <code><%= value[:value] %></code>
+          <% else %>
+            <%= value[:value] %>
+          <% end %>
+        </dd>
+      <% end %>
+    </dl>
+
+    <% links = result.extra.select{|k, v| v[:type] == :href} %>
+    <% unless links.empty? %>
+      <footer align="center">
+        <% links.each do |key, value| %>
+          <a href="<%= value[:value] %>" target="_blank"><small><u><%= key %></u></small></a>
+        <% end %>
+      </footer>
+    <% end %>
   <% end %>
-<% end %>
+</article>

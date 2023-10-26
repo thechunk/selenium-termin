@@ -15,6 +15,8 @@ module Termin::Session; end
 module Termin::Web; end
 loader = Zeitwerk::Loader.new
 
+include R18n::Helpers
+
 {
   'helpers' => Termin,
   'runner' => Termin::Runner,

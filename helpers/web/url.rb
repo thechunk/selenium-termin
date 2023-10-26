@@ -26,7 +26,7 @@ module Termin
         end
 
         def status_url(service, request: nil)
-          url_for(path: "/status/#{service}", request:)
+          url_for(path: "/status/#{service.to_s}", request:)
         end
 
         def query(**opts)
