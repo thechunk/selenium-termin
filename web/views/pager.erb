@@ -2,13 +2,29 @@
   <nav>
     <ul>
       <% unless @first_path.nil? %>
-        <li><a <% unless @first_path.empty? %>href="<%= @first_path %>"<% end %> role="button" class="secondary">⇤</a></li>
+        <li>
+          <a <% unless @first_path.empty? %>href="<%= @first_path %>"<% end %> role="button" class="secondary">
+            <i data-feather="chevrons-left"></i>
+          </a>
+        </li>
       <% end %>
-      <li><a <% unless @next_path.nil? %>href="<%= @next_path %>"<% end %> role="button" class="outline secondary">←</a></li>
+      <li>
+        <a <% unless @next_path.nil? %>href="<%= @next_path %>"<% end %> role="button" class="outline secondary">
+          <i data-feather="chevron-left"></i>
+        </a>
+      </li>
 
-      <li><a <% unless @previous_path.nil? %>href="<%= @previous_path %>"<% end %> role="button" class="outline secondary">→</a></li>
+      <li>
+        <a <% unless @previous_path.nil? %>href="<%= @previous_path %>"<% end %> role="button" class="outline secondary">
+          <i data-feather="chevron-right"></i>
+        </a>
+      </li>
       <% unless @last_path.nil? %>
-        <li><a <% unless @last_path.empty? %>href="<%= @last_path %>"<% end %> role="button" class="secondary">⇥</a></li>
+        <li>
+          <a <% unless @last_path.empty? %>href="<%= @last_path %>"<% end %> role="button" class="secondary">
+            <i data-feather="chevrons-right"></i>
+          </a>
+        </li>
       <% end %>
     </ul>
   </nav>

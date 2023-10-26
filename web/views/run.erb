@@ -1,46 +1,34 @@
+<h1><%= t.run.title(@log[:id]) %></h1>
+
 <%= erb :pager %>
 
 <div class="split-even">
   <div>
     <table>
       <tbody>
-        <tr>
-          <th scope="row">session_id</td>
-          <td><code><%= @log[:session_id] %></code></td>
-        </tr>
-        <tr>
-          <th scope="row">type</td>
-          <td><%= @log[:type] %></td>
-        </tr>
-        <tr>
-          <th scope="row">start_at</td>
-          <td><%= @log[:start_at] %></td>
-        </tr>
-        <tr>
-          <th scope="row">end_at</td>
-          <td><%= @log[:end_at] %></td>
-        </tr>
-        <tr>
-          <th scope="row">time</td>
-          <td>
-            <% unless @log[:end_at].nil? %>
-              <%= (@log[:end_at] - @log[:start_at]).round(2) %>
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">status</td>
-          <td><%= @log[:status] %></td>
-        </tr>
-
-        <tr>
-          <th scope="row">last_url</td>
-          <td><code><%= @log[:last_url] %></code></td>
-        </tr>
+        <% [:session_id, :type, :start_at, :end_at, :duration, :status, :last_url].each do |col| %>
+          <tr>
+            <th scope="row"><%= t.run[col.to_s].title %></td>
+            <td>
+              <% case col when :duration %>
+                <% unless @log[:end_at].nil? %>
+                  <%= (@log[:end_at] - @log[:start_at]).round(2) %>
+                <% end %>
+              <% when :status %>
+                <%= t.run.status[@log[:status]].icon %>
+                <%= t.run.status[@log[:status]].text %>
+              <% when :type %>
+                <%= @log[col] %>
+              <% else %>
+                <code><%= @log[col] %></code>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
 
         <% ['console_events', 'network_events', 'driver_events'].each do |log_type| %>
           <tr>
-            <th><%= log_type %></th>
+            <th><%= t.run.log_type[log_type].title %></th>
             <td><a href="<%= Termin::Web::Url.run_file_url(@log[:id], log_type) %>">download</a></td>
           </tr>
         <% end %>
@@ -50,7 +38,7 @@
 
   <div>
     <details open>
-      <summary>error</summary>
+      <summary><i data-feather="file-text"></i> error</summary>
       <% unless @log[:error].nil? %>
         <code><%= CGI::escapeHTML(@log[:error]) %></code>
       <% end %>

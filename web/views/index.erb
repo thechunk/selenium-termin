@@ -2,7 +2,7 @@
   <aside>
     <nav>
       <details open>
-        <summary>Type</summary>
+        <summary><%= t.run.type.title %></summary>
         <ul>
           <li>
             <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(status: request.params['status']), request:) %>" <% if params['type'].nil? %>class="contrast"<% end %>>
@@ -18,6 +18,20 @@
           <% end %>
         </ul>
       </details>
+
+      <details open>
+        <summary><%= t.service.status.title %></summary>
+        <ul>
+          <li>
+            <div
+                hx-get="<%= Termin::Web::Url.status_url('selenium', request:) %>"
+                hx-trigger="every 5s"
+                hx-on="htmx:afterSettle:window.configure()">
+                <%= erb :status, layout: false, locals: { result: Termin::Infra::Services.status(:selenium) } %>
+            </div>
+          </li>
+        </ul>
+      </details>
     </nav>
   </aside>
 
@@ -26,13 +40,13 @@
 
     <% @running_logs.each do |log| %>
       <article>
-        <header aria-busy="true" align="center"><%= log[:status] %></header>
+        <header aria-busy="true" align="center"><%= t.run.status[log[:status]].text %></header>
 
         <table>
           <tbody>
-            <% [:id, :start_at, :type].each do |col| %>
+            <% [:id, :session_id, :start_at, :type].each do |col| %>
               <tr>
-                <th scope="row"><strong><%= col.to_s %></strong></th>
+                <th scope="row"><strong><%= t.run[col.to_s].title %></strong></th>
                 <td><%= log[col] %></td>
               </tr>
             <% end %>
@@ -61,7 +75,9 @@
           <select name="status" title="status" onchange="this.form.submit()">
             <option value="">All</option>
             <% @run_statuses.each do |run_status| %>
-              <option value="<%= run_status %>" <% if params['status'] == run_status %>selected<% end %>><%= run_status %></option>
+              <option value="<%= run_status %>" <% if params['status'] == run_status %>selected<% end %>>
+              <%= t.run.status[run_status].text %>
+              </option>
             <% end %>
           </select>
         </div>
@@ -78,18 +94,18 @@
     </form>
 
     <% if @run_logs.empty? %>
-      <article>
-        <i>No results found.</i>
-      </article>
+      <article><i><%= t.index.no_results %></i></article>
     <% else %>
       <table role="grid">
         <thead>
           <tr>
-            <th scope="col">id</th>
-            <th scope="col">start</th>
-            <th scope="col" class="sm-hidden">time</th>
-            <th scope="col">type</th>
-            <th scope="col">status</th>
+            <th scope="col"><%= t.run.id.title %></th>
+            <th scope="col"><%= t.run.start_at.title %></th>
+            <th scope="col" class="sm-hidden"><%= t.run.duration.title %></th>
+            <% if request.params['type'].nil? || request.params['type'].empty? %>
+              <th scope="col"><%= t.run.type.title %></th>
+            <% end %>
+            <th scope="col"><%= t.run.status.title %></th>
           </tr>
         </thead>
 
@@ -106,15 +122,18 @@
                 <% end %>
               </td>
 
-              <td>
-                <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: log[:type], status: request.params['status']), request:) %>">
-                  <%= log[:type] %>
-                </a>
-              </td>
+              <% if request.params['type'].nil? || request.params['type'].empty? %>
+                <td>
+                  <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: log[:type], status: request.params['status']), request:) %>">
+                    <%= log[:type] %>
+                  </a>
+                </td>
+              <% end %>
 
               <td>
                 <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: request.params['type'], status: log[:status]), request:) %>">
-                  <%= log[:status] %>
+                  <span class="md-hidden"><%= t.run.status[log[:status]].icon %></span>
+                  <span class="sm-hidden"><%= t.run.status[log[:status]].text %></span>
                 </a>
               </td>
             </tr>

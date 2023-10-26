@@ -19,6 +19,8 @@
   "license": "ISC",
   "dependencies": {
     "@picocss/pico": "^1.5.10",
+    "feather-icons": "^4.29.1",
+    "htmx.org": "^1.9.6",
     "parcel": "^2.10.0"
   },
   "devDependencies": {

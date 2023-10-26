@@ -1,0 +1,18 @@
+<% if result.nil? %>
+  <i data-feather="alert-circle" class="status error"></i>
+  <%= t.service.messages.unreachable('Selenium') %>
+<% else %>
+  <% case result['value']['ready'] when true %>
+    <i data-feather="check-circle" class="status success"></i>
+    <%= t.service.messages.ready('Selenium') %>
+  <% when false %>
+    <i data-feather="x-circle" class="status warn"></i>
+    <%= t.service.messages.busy('Selenium') %>
+    <hr>
+
+    <small><%= result['value']['nodes'][0]['slots'].first.dig('session', 'sessionId') %></small>
+  <% else %>
+    <i data-feather="alert-circle" class="status error"></i>
+    <%= t.service.messages.error('Selenium') %>
+  <% end %>
+<% end %>

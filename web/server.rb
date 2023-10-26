@@ -14,6 +14,10 @@ module Termin
             set :static_cache_control, :no_cache
           end
 
+          before do
+            @dev = settings.development?
+          end
+
           get '/' do
             @page = 1 unless params.key?('p')
             @page ||= params['p'].to_i
@@ -130,6 +134,12 @@ module Termin
             halt 404 if file_path.nil?
 
             send_file(file_path, type: types[file], disposition: :inline)
+          end
+
+          get '/status/:service' do
+            result = Infra::Services.status(:selenium)
+
+            erb :status, layout: false, locals: {result:}
           end
         end
 

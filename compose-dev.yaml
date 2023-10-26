@@ -67,6 +67,8 @@ services:
     ports:
       - 4445:4444/tcp
       - 7901:7900/tcp
+    environment:
+      SE_OPTS: --allow-cors true
 
 secrets:
   postgres_passwd:

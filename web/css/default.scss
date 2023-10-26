@@ -27,6 +27,10 @@ td, details {
   }
 }
 
+th {
+  white-space: nowrap;
+}
+
 nav .logo {
   display: inline-block;
   height: 24px;
@@ -45,6 +49,10 @@ nav {
 
 .split-nav {
   grid-template-columns: 200px auto;
+
+  td {
+    white-space: nowrap;
+  }
 }
 
 .split-even {
@@ -100,6 +108,12 @@ form > .grid > div > a[role="button"] {
       }
     }
   }
+}
+
+.status {
+  &.success { color: var(--ins-color); }
+  &.error { color: var(--del-color); }
+  &.warn { color: var(--muted-color); }
 }
 
 @media only screen and (prefers-color-scheme: dark) {

@@ -25,6 +25,10 @@ module Termin
           url_for(path: "/run/#{id}/#{file}", request:)
         end
 
+        def status_url(service, request: nil)
+          url_for(path: "/status/#{service}", request:)
+        end
+
         def query(**opts)
           URI.encode_www_form(opts.reject { |k, v| v.nil? || v.to_s.empty? })
         end

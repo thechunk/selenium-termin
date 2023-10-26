@@ -1,6 +1,59 @@
 brand:
-  termin_bot: TerminBot
+  termin_bot: 'TerminBot'
 
 nav:
-  index: Runs
-  telegram: Telegram
+  index: 'Runs'
+  telegram: 'Telegram'
+
+index:
+  no_results: 'No results found.'
+
+run:
+  title: 'Run #%1'
+  id:
+    title: 'ID'
+  session_id:
+    title: 'Session ID'
+  type:
+    title: 'Type'
+  status:
+    title: 'Status'
+    started:
+      icon: <i data-feather="play-circle"></i>
+      text: Running
+    success:
+      icon: <i data-feather="check-circle" class="status success"></i>
+      text: Success
+    error:
+      icon: <i data-feather="alert-circle" class="status error"></i>
+      text: Unexpected error
+    interrupt:
+      icon: <i data-feather="x-octagon" class="status warn"></i>
+      text: Process interrupt
+    fail:
+      icon: <i data-feather="x-circle" class="status error"></i>
+      text: Fail
+  start_at:
+    title: 'Started'
+  end_at:
+    title: 'Finished'
+  duration:
+    title: 'Time'
+  last_url:
+    title: 'Last URL'
+  log_type:
+    console_events:
+      title: 'Console events'
+    network_events:
+      title: 'Network events'
+    driver_events:
+      title: 'Driver events'
+
+service:
+  status:
+    title: 'Services'
+  messages:
+    busy: '%1 busy'
+    ready: '%1 ready'
+    unreachable: '%1 unreachable'
+    error: '%1 invalid state'
