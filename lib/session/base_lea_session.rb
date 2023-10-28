@@ -18,18 +18,13 @@ module Termin
           :fill_form,
           :next_stage,
           :validate_error_message,
-          :select_calendar_date,
-          :select_time,
-          :bypass_captcha,
+          :wait_user_input,
+          #:select_calendar_date,
+          #:select_time,
+          #:bypass_captcha,
           :next_stage,
           :wait_for_first_name
         ]
-      end
-
-      def call
-        steps.each do |method_name|
-          step(method_name)
-        end
       end
 
       def load_root

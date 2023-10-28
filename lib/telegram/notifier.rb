@@ -2,11 +2,12 @@ module Termin
   module Telegram
     class Notifier
       include Singleton
-      attr_accessor :bot
+      attr_accessor :bot, :prompt_waiting
 
       def initialize
         @logger = Util::Logger.instance
         @db = Data::Connection.instance
+        @prompt_waiting = false
       end
 
       def register(chat_id)
@@ -35,6 +36,11 @@ module Termin
         end
 
         @logger.info("Message sent to #{chat_ids.length} chats")
+      end
+
+      def prompt
+        @prompt_waiting = true
+        broadcast(text: '/done to finish')
       end
     end
   end

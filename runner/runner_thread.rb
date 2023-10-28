@@ -20,7 +20,7 @@ module Termin
             prune(keep_only: 200)
             cleanup_hung
 
-            [LeaExtend, LeaTransfer].each do |klass|
+            [BurgerErlaubnisAufNeuerPass, BurgerFahrerlaubnis, LeaExtend, LeaTransfer].each do |klass|
               @session_id = nil
 
               @driver_connection.connect do |driver_connection|

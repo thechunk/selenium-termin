@@ -14,6 +14,12 @@ module Termin
               case message.text
               when '/start'
                 @notifier.register(message.chat.id)
+              when '/done'
+                if @notifier.prompt_waiting == true
+                  @notifier.prompt_waiting = false
+                else
+                  @notifier.broadcast(text: 'Not waiting for user input')
+                end
               end
             end
           end

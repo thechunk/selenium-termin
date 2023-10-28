@@ -17,8 +17,14 @@ module Termin
         @history = []
       end
 
-      def call
+      def steps
         raise NotImplementedError
+      end
+
+      def call
+        steps.each do |method_name|
+          step(method_name)
+        end
       end
 
       def step(method_name, *args, &block)
@@ -89,6 +95,18 @@ module Termin
         end
 
         element
+      end
+
+      def wait_user_input
+        @notifier.broadcast(text: "Waiting for user input: #{ENV['VNC_URL']}")
+        @notifier.prompt
+
+        attempts = 60
+        until @notifier.prompt_waiting == false || attempts <= 0 do
+          @logger.debug("Waiting for user input...")
+          @attempts = attempts - 1
+          sleep 4
+        end
       end
     end
   end
