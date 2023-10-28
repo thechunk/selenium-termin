@@ -33,13 +33,12 @@
     <dl>
       <% result.extra.reject{|k, v| v[:type] == :href}.each do |key, value| %>
         <dt><strong><%= key %></strong></dt>
-        <dd>
           <% case value[:type] when :code %>
-            <code><%= value[:value] %></code>
+            <dd><code><%= value[:value] %></code></dd>
           <% else %>
-            <%= value[:value] %>
+            <dd><%= value[:value] %></dd>
           <% end %>
-        </dd>
+          <br>
       <% end %>
     </dl>
 

@@ -14,6 +14,10 @@
                 <% unless @log[:end_at].nil? %>
                   <%= (@log[:end_at] - @log[:start_at]).round(2) %>
                 <% end %>
+              <% when :start_at, :end_at %>
+                <% unless @log[col].nil? %>
+                  <%= @log[col].strftime(t.date.long) %>
+                <% end %>
               <% when :status %>
                 <%= t.run.status[@log[:status]].icon %>
                 <%= t.run.status[@log[:status]].text %>
@@ -53,7 +57,7 @@
                 <tr>
                   <th scope="row"><%= step[:step] %></th>
                   <td><%= step[:method] %></td>
-                  <td><code><%= step[:start_at] %></code></td>
+                  <td><%= step[:start_at].strftime(t.date.short) %></td>
                   <td>
                     <% unless step[:end_at].nil? %>
                       <%= (step[:end_at] - step[:start_at]).round(2) %>

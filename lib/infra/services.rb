@@ -13,7 +13,10 @@ module Termin
             begin
               uri = URI("#{ENV['SELENIUM_URL']}/status")
               request = Net::HTTP::Get.new(uri)
-              response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
+              response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+                http.read_timeout = 3
+                http.request(request)
+              end
               data = JSON.parse(response.body)
               ready = data.dig('value', 'ready')
 
@@ -49,7 +52,39 @@ module Termin
             end
 
             result
+          when :runner
+            running_logs
           end
+        end
+
+        def running_logs
+          running = Data::Connection.instance.schema[:run_logs]
+            .where(status: Session::RunType::STARTED)
+            .first
+
+          result = Status.new(:runner)
+
+          if running.nil?
+            result = Status.new(:runner, true, true)
+          else
+            result = Status.new(:runner, false, true, {
+              i18n.run.id.title => {
+                value: running[:id]
+              },
+              i18n.run.session_id.title => {
+                type: :code,
+                value: running[:session_id]
+              },
+              i18n.run.start_at.title => {
+                value: running[:start_at].strftime(i18n.date.short)
+              },
+              i18n.run.type.title => {
+                value: running[:type]
+              }
+            })
+          end
+
+          result
         end
       end
     end

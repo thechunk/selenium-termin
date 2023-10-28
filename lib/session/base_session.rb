@@ -38,9 +38,13 @@ module Termin
         )
         @history << [method_name, args]
 
-        self.send(method_name, *args, &block)
-
-        @db.schema[:run_history].where(id: history_id).update(end_at: DateTime.now)
+        begin
+          self.send(method_name, *args, &block)
+        rescue Exception => e
+          raise
+        ensure
+          @db.schema[:run_history].where(id: history_id).update(end_at: DateTime.now)
+        end
       end
 
       def get(url)

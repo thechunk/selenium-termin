@@ -8,6 +8,10 @@ nav:
 index:
   no_results: 'No results found.'
 
+date:
+  short: '%m.%d %R'
+  long: '%F %R'
+
 run:
   title: 'Run #%1'
   id:
@@ -71,3 +75,5 @@ service:
     title: 'Selenium'
     vnc_cta: 'VNC'
     dash_cta: 'Dashboard'
+  runner:
+    title: 'Runner'

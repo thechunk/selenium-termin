@@ -69,8 +69,11 @@ module Termin
               request:
             ) unless @page == @pages || @total == 0
 
-            @running_logs, @run_logs = run_logs_query.limit(limit).offset(offset).all
-              .partition { |v| v[:status] == Session::RunType::STARTED }
+            @run_logs = run_logs_query
+              .limit(limit)
+              .offset(offset)
+              .exclude(status: Session::RunType::STARTED)
+              .all
 
             erb :index
           end

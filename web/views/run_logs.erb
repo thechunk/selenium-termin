@@ -1,0 +1,48 @@
+<% if run_logs.empty? %>
+  <article><i><%= t.index.no_results %></i></article>
+<% else %>
+  <table role="grid">
+    <thead>
+      <tr>
+        <th scope="col"><%= t.run.id.title %></th>
+        <th scope="col"><%= t.run.start_at.title %></th>
+        <th scope="col" class="sm-hidden"><%= t.run.duration.title %></th>
+        <% if request.params['type'].nil? || request.params['type'].empty? %>
+          <th scope="col"><%= t.run.type.title %></th>
+        <% end %>
+        <th scope="col"><%= t.run.status.title %></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% run_logs.each do |log| %>
+        <tr>
+          <th scope="row">
+            <a href="<%= Termin::Web::Url.run_url(log[:id], query: Termin::Web::Url.query(type: request.params['type'], status: request.params['status']), request:) %>"><%= log[:id] %></a><% if log[:keep] %>*<% end %>
+          </th>
+          <td><%= log[:start_at].strftime(t.date.short)  %></td>
+          <td class="sm-hidden">
+            <% unless log[:end_at].nil? %>
+              <%= (log[:end_at] - log[:start_at]).round(2) %>
+            <% end %>
+          </td>
+
+          <% if request.params['type'].nil? || request.params['type'].empty? %>
+            <td>
+              <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: log[:type], status: request.params['status']), request:) %>">
+                <%= log[:type] %>
+              </a>
+            </td>
+          <% end %>
+
+          <td>
+            <a href="<%= Termin::Web::Url.index_url(query: Termin::Web::Url.query(type: request.params['type'], status: log[:status]), request:) %>">
+              <span class="md-hidden"><%= t.run.status[log[:status]].icon %></span>
+              <span class="sm-hidden"><%= t.run.status[log[:status]].text %></span>
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

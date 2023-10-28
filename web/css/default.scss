@@ -55,7 +55,10 @@ nav {
 .split-nav {
   grid-template-columns: 200px auto;
 
-  td {
+  th, td {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
@@ -67,6 +70,8 @@ nav {
       dt, dd {
         @extend small;
         margin: 0;
+
+        display: inline;
 
         code {
           word-break: break-word;
@@ -107,6 +112,10 @@ nav {
 
 .split-even {
   grid-template-columns: 50% auto;
+
+  td {
+    word-break: break-word;
+  }
 
   > div:last-child {
     position: relative;
