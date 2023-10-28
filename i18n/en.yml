@@ -49,6 +49,16 @@ run:
     driver_events:
       title: 'Driver events'
 
+run_history:
+  id:
+    title: '#'
+  method:
+    title: 'Method'
+  start_at:
+    title: 'Started'
+  duration:
+    title: 'Time'
+
 service:
   status:
     title: 'Services'

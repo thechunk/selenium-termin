@@ -47,7 +47,7 @@ module Termin
 
         begin
           @logger.debug("Run starting: #{run_type}")
-          session = klass.new(driver: driver_connection.driver)
+          session = klass.new(driver: driver_connection.driver, run_log_id:)
           session.call
           run_log_data[:status] = Session::RunType::SUCCESS
           run_log_data[:keep] = true
@@ -66,6 +66,8 @@ module Termin
               f << entries.join("\n")
             end
           end
+
+          @logger.debug("Step history: #{session.history}")
 
           @db.schema[:run_logs].where(id: run_log_id).update(run_log_data.merge(
             page_source_path: write_log_text(session_id, :page_source) { |f| f << driver_connection.page_source },
@@ -162,6 +164,7 @@ module Termin
             to_delete_ids << run_log[:id]
           end
 
+          @db.schema[:run_history].where(run_log_id: to_delete_ids).delete
           @db.schema[:run_logs].where(id: to_delete_ids).delete
 
           @logger.info("Pruning #{to_delete_ids.count} logs...")

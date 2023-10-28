@@ -5,16 +5,36 @@ module Termin
       ELEMENT_TIMEOUT = 120
       LOADING_TIMEOUT = 30
 
-      attr_reader :driver
+      attr_reader :driver, :history
 
-      def initialize(driver: nil)
+      def initialize(driver: nil, run_log_id: nil)
         @logger = Util::Logger.instance
         @notifier = Telegram::Notifier.instance
+        @db = Data::Connection.instance
         @driver = driver
+        @run_log_id = run_log_id
+
+        @history = []
       end
 
       def call
         raise NotImplementedError
+      end
+
+      def step(method_name, *args, &block)
+        raise NoMethodError, "undefined method `#{method_name}' for #{self}:Class" unless self.respond_to?(method_name)
+
+        history_id = @db.schema[:run_history].insert(
+          run_log_id: @run_log_id,
+          step: @history.length,
+          method: method_name.to_s,
+          start_at: DateTime.now
+        )
+        @history << [method_name, args]
+
+        self.send(method_name, *args, &block)
+
+        @db.schema[:run_history].where(id: history_id).update(end_at: DateTime.now)
       end
 
       def get(url)

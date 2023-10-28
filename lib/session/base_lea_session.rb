@@ -1,32 +1,62 @@
 module Termin
   module Session
     class BaseLeaSession < BaseSession
-      def initialize(driver: nil)
-        super(driver:)
+      def initialize(driver: nil, run_log_id: nil)
+        super(driver:, run_log_id:)
       end
 
       def form
         raise NotImplementedError
       end
 
-      def call
-        get('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188')
+      def steps
+        [
+          :load_root,
+          :begin_wizard,
+          :accept_terms,
+          :next_stage,
+          :fill_form,
+          :next_stage,
+          :validate_error_message,
+          :select_calendar_date,
+          :select_time,
+          :bypass_captcha,
+          :next_stage,
+          :wait_for_first_name
+        ]
+      end
 
+      def call
+        steps.each do |method_name|
+          step(method_name)
+        end
+      end
+
+      def load_root
+        get('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en&termin=1&dienstleister=327437&anliegen[]=328188')
+      end
+
+      def begin_wizard
         loading_wait
         click(css: '.slide-content .link > a')
+      end
 
+      def accept_terms
         loading_wait
         click(name: 'gelesen')
+      end
 
+      def next_stage
         loading_wait
         click(id: 'applicationForm:managedForm:proceed')
+      end
 
+      def fill_form
         loading_wait
         form.populate
+      end
 
-        loading_wait
-        click(id: 'applicationForm:managedForm:proceed')
-
+      def validate_error_message
         loading_wait
         begin
           messages_box = wait_for_element(id: 'messagesBox') do |element|
@@ -41,8 +71,9 @@ module Termin
           @logger.info("messages_box: #{messages_box}")
           @logger.info("no_dates: #{no_dates}")
         end
+      end
 
-        # parse calendar
+      def select_calendar_date
         calendar_element = wait_for_element(id: 'xi-fs-2')
         day_elements = calendar_element.find_elements(css: 'td[data-handler="selectDay"]')
 
@@ -61,7 +92,9 @@ module Termin
         @logger.debug("Selecting last available opening: #{last_day_element}")
 
         last_day_element.click
+      end
 
+      def select_time
         loading_wait
         time_select_element = wait_for_element(id: 'xi-sel-3') do |element|
           element.displayed? && element.find_elements(css: 'option[name]').empty?
@@ -79,11 +112,9 @@ module Termin
 
         time_select = Selenium::WebDriver::Support::Select.new(time_select_element)
         time_select.select_by(:text, first_time_element.text)
+      end
 
-        bypass_captcha
-
-        click(id: 'applicationForm:managedForm:proceed')
-
+      def wait_for_first_name
         loading_wait
         wait_for_element(name: 'antragsteller_vname')
       end

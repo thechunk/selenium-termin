@@ -86,6 +86,8 @@ module Termin
               .first
             halt 404 if @log.nil?
 
+            @history = settings.db.schema[:run_history].where(run_log_id:).order(:step)
+
             next_id_query = settings.db.schema[:run_logs]
               .where(Sequel.lit('start_at > ?', @log[:start_at]))
               .order(:start_at)

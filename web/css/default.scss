@@ -9,6 +9,11 @@
   --spacing: 0.75rem;
   --font-size: 1em;
 }
+[data-theme=light],
+:root:not([data-theme=dark]) {
+  --primary: #e40422;
+  --contrast: #000;
+}
 
 iframe {
   width: 100%;
@@ -80,6 +85,7 @@ nav {
 
     header dd {
       float: right;
+      font-style: italic;
     }
 
     article {
@@ -112,7 +118,8 @@ nav {
       height: 100%;
       padding-bottom: calc(var(--spacing) * 3);
 
-      > code {
+      > code, > div {
+        display: block;
         height: 100%;
         overflow: auto;
       }

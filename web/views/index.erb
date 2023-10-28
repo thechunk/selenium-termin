@@ -19,10 +19,7 @@
         </ul>
       </details>
 
-      <details open>
-        <summary><%= t.service.status.title %></summary>
-        <%= erb :status, layout: false, locals: { service: :selenium } %>
-      </details>
+      <%= erb :status, layout: false, locals: { service: :selenium } %>
     </nav>
   </aside>
 

@@ -38,15 +38,45 @@
 
   <div>
     <details open>
-      <summary><i data-feather="file-text"></i> error</summary>
-      <% unless @log[:error].nil? %>
-        <code><%= CGI::escapeHTML(@log[:error]) %></code>
+      <summary><i data-feather="file-text"></i> history</summary>
+      <% unless @history.nil? || @history.empty? %>
+        <div>
+          <table>
+            <thead>
+              <th scope="col"><%= t.run_history.id.title %></th>
+              <th scope="col"><%= t.run_history['method'].title %></th>
+              <th scope="col"><%= t.run_history.start_at.title %></th>
+              <th scope="col"><%= t.run_history.duration.title %></th>
+            </thead>
+            <tbody>
+              <% @history.each do |step| %>
+                <tr>
+                  <th scope="row"><%= step[:step] %></th>
+                  <td><%= step[:method] %></td>
+                  <td><code><%= step[:start_at] %></code></td>
+                  <td>
+                    <% unless step[:end_at].nil? %>
+                      <%= (step[:end_at] - step[:start_at]).round(2) %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       <% end %>
     </details>
   </div>
 </div>
 
 <div>
+  <details open>
+    <summary>error</summary>
+    <% unless @log[:error].nil? %>
+      <code><%= CGI::escapeHTML(@log[:error]) %></code>
+    <% end %>
+  </details>
+
   <details>
     <summary>last_screenshot</summary>
     <figure><img src="<%= Termin::Web::Url.run_file_url(@log[:id], 'last_screenshot.png') %>" /></figure>
