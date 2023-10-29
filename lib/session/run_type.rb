@@ -5,6 +5,7 @@ module Termin
       SUCCESS = 'success'
       FAIL = 'fail'
       INTERRUPT = 'interrupt'
+      SESSION_KILL = 'session_kill'
       ERROR = 'error'
     end
   end

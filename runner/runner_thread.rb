@@ -17,7 +17,6 @@ module Termin
 
         @runner_thread = Thread.fork do
           loop do
-            prune(keep_only: 200)
             cleanup_hung
 
             [BurgerErlaubnisAufNeuerPass, BurgerFahrerlaubnis, LeaExtend, LeaTransfer].each do |klass|
@@ -55,6 +54,10 @@ module Termin
           @logger.error("Runner failed: #{e.full_message}")
           run_log_data[:error] = e.full_message
           run_log_data[:status] = Session::RunType::FAIL
+        rescue Session::SessionKillError => e
+          @logger.error("Session killed: #{e.full_message}")
+          run_log_data[:error] = e.full_message
+          run_log_data[:status] = Session::RunType::SESSION_KILL
         rescue Exception => e
           @logger.error("Unexpected error: #{e.full_message}")
           run_log_data[:error] = e.full_message

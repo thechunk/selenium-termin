@@ -39,9 +39,9 @@ module Termin
 
       def validate_session
         loading_wait
-        taken_url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen/logout'
+        logout_url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen/logout'
 
-        raise RunFailError.new(taken_url) if @driver.current_url == taken_url
+        raise SessionKillError.new(logout_url) if @driver.current_url == logout_url
       end
 
       def accept_terms

@@ -34,8 +34,11 @@ run:
     interrupt:
       icon: <i data-feather="x-octagon" class="status warn"></i>
       text: Process interrupt
-    fail:
+    session_kill:
       icon: <i data-feather="x-circle" class="status error"></i>
+      text: Session kill
+    fail:
+      icon: <i data-feather="stop-circle" class="status error"></i>
       text: Fail
   start_at:
     title: 'Started'
