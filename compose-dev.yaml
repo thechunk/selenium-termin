@@ -68,7 +68,7 @@ services:
       - 4445:4444/tcp
       - 7901:7900/tcp
     environment:
-      SE_OPTS: --allow-cors true
+      SE_OPTS: --session-timeout 600
 
 secrets:
   postgres_passwd:

@@ -14,7 +14,7 @@ module Termin
               uri = URI("#{ENV['SELENIUM_URL']}/status")
               request = Net::HTTP::Get.new(uri)
               response = Net::HTTP.start(uri.hostname, uri.port) do |http|
-                http.read_timeout = 3
+                http.read_timeout = 1
                 http.request(request)
               end
               data = JSON.parse(response.body)
@@ -64,10 +64,20 @@ module Termin
 
           result = Status.new(:runner)
 
+          pid_file = "#{File.expand_path(Dir.pwd)}/var/pid/app.rb.pid"
+          unless File.exist?(pid_file)
+            return Status.new(:runner, false, false)
+          end
+
           if running.nil?
             result = Status.new(:runner, true, true)
           else
-            result = Status.new(:runner, false, true, {
+            history = Data::Connection.instance.schema[:run_history]
+              .where(run_log_id: running[:id])
+              .reverse_order(:step)
+              .first
+
+            extra = {
               i18n.run.id.title => {
                 value: running[:id]
               },
@@ -81,7 +91,13 @@ module Termin
               i18n.run.type.title => {
                 value: running[:type]
               }
-            })
+            }
+
+            unless history.nil?
+              extra[i18n.run_history[:method].title] = { value: history[:method] }
+            end
+
+            result = Status.new(:runner, false, true, extra)
           end
 
           result

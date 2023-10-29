@@ -65,6 +65,7 @@ web/public/logs/*
 
 var/*
 !var/.gitkeep
+!var/pid/.gitkeep
 
 .parcel-cache
 web/public/dist
@@ -73,3 +74,4 @@ supervisord.pid
 secrets/*
 !secrets/.gitkeep
 .env*.local
+*.pid

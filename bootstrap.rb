@@ -1,3 +1,5 @@
+BEGIN { File.write("var/pid/#{ $0 }.pid", $$) }
+END { File.delete("var/pid/#{ $0 }.pid") }
 $stdout.sync = true # https://stackoverflow.com/a/42344140
 
 env = ENV['APP_ENV'].to_s

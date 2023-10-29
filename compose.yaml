@@ -17,6 +17,7 @@ services:
       - ./var/log_data:/usr/src/app/var/log_data:z
       - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
       - ./secrets/telegram_token:/run/secrets/telegram_token:z
+      - ./var/pid:/usr/src/app/var/pid:z
     environment:
       APP_ENV: production
       TZ: Europe/Berlin
@@ -35,6 +36,7 @@ services:
       - ./web/public/logs:/usr/src/app/web/public/logs:z
       - ./var/log_data:/usr/src/app/var/log_data:z
       - ./secrets/postgres_passwd:/run/secrets/postgres_passwd:z
+      - ./var/pid:/usr/src/app/var/pid:z
     ports:
       - 4567:4567/tcp
     environment:
@@ -62,3 +64,5 @@ services:
     ports:
       - 4444:4444/tcp
       - 7900:7900/tcp
+    environment:
+      SE_OPTS: --session-timeout 600
