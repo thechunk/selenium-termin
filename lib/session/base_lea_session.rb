@@ -13,6 +13,7 @@ module Termin
         [
           :load_root,
           :begin_wizard,
+          :validate_session,
           :accept_terms,
           :next_stage,
           :fill_form,
@@ -34,6 +35,13 @@ module Termin
       def begin_wizard
         loading_wait
         click(css: '.slide-content .link > a')
+      end
+
+      def validate_session
+        loading_wait
+        taken_url = 'https://otv.verwalt-berlin.de/ams/TerminBuchen/logout'
+
+        raise RunFailError.new(taken_url) if @driver.current_url == taken_url
       end
 
       def accept_terms
