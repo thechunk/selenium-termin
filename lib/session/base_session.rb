@@ -22,8 +22,8 @@ module Termin
       end
 
       def call
-        steps.each do |method_name|
-          step(method_name)
+        steps.each do |method_name, args|
+          step(method_name, *args)
         end
       end
 
@@ -101,9 +101,22 @@ module Termin
         element
       end
 
-      def wait_user_input
-        @notifier.broadcast(text: "Waiting for user input: #{ENV['VNC_URL']}")
-        @notifier.prompt
+      def wait_user_input(capture_element=nil)
+        unless capture_element.nil?
+          file = Tempfile.new(['', '.png'])
+          @driver.find_element(capture_element).save_screenshot(file.path)
+          image_path = file.path
+        end
+
+        @notifier.broadcast(
+          text: 'Waiting for user input',
+          links: [{
+            text: 'VNC',
+            url: ENV['VNC_URL']
+          }],
+          image_path:,
+          prompt: true
+        )
 
         attempts = 3 * 60
         until @notifier.prompt_waiting == false || attempts <= 0 do

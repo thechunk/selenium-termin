@@ -19,7 +19,7 @@ module Termin
           :fill_form,
           :next_stage,
           :validate_error_message,
-          :wait_user_input,
+          [:wait_user_input, [{id: 'xi-div-1'}]],
           #:select_calendar_date,
           #:select_time,
           #:bypass_captcha,

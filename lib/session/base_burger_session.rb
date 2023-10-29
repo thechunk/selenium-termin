@@ -29,7 +29,7 @@ module Termin
         [
           :load_root,
           :validate_error_message,
-          :wait_user_input
+          [:wait_user_input, [{class: 'calendar-table'}]]
         ]
       end
 

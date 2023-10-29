@@ -21,26 +21,48 @@ module Termin
         end
       end
 
-      def broadcast(text: '', image_path: nil)
+      def broadcast(text: '', links: [], image_path: nil, prompt: false)
         return if text.empty? && image_path.nil?
-
-        unless image_path.nil?
-          expanded_image_path = File.expand_path(image_path)
-          photo = Faraday::UploadIO.new(expanded_image_path, 'image/png')
-        end
 
         chat_ids = @db.schema[:telegram_chats].all
         chat_ids.each do |chat_id|
-          @bot.api.send_message(chat_id: chat_id[:chat_id], text:) if image_path.nil?
-          @bot.api.send_photo(chat_id: chat_id[:chat_id], caption: text, photo:) unless image_path.nil?
+          message_params = { chat_id: chat_id[:chat_id] }
+          if prompt == true
+            @prompt_waiting = true
+            kb = [links.map do |link|
+              ::Telegram::Bot::Types::InlineKeyboardButton.new(**link)
+            end + [
+              ::Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Done', callback_data: 'prompt_done'),
+            ]]
+            message_params[:reply_markup] = ::Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+          end
+
+          if image_path.nil?
+            message_params[:text] = text
+          else
+            message_params[:caption] = text
+          end
+
+          if message_params.key?(:text)
+            @bot.api.send_message(**message_params)
+          elsif message_params.key?(:caption)
+            expanded_image_path = File.expand_path(image_path)
+            begin
+              @bot.api.send_photo(**message_params.merge(
+                photo: Faraday::UploadIO.new(expanded_image_path, 'image/png')
+              ))
+            rescue ::Telegram::Bot::Exceptions::ResponseError => e
+              @logger.error(e.full_message)
+              @bot.api.send_document(**message_params.merge(
+                document: Faraday::UploadIO.new(expanded_image_path, 'image/png')
+              ))
+            ensure
+              File.unlink(expanded_image_path)
+            end
+          end
         end
 
         @logger.info("Message sent to #{chat_ids.length} chats")
-      end
-
-      def prompt
-        @prompt_waiting = true
-        broadcast(text: '/done to finish')
       end
     end
   end
