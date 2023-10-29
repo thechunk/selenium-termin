@@ -138,6 +138,15 @@ module Termin
             file_path = @log["#{File.basename(file, '.png')}_path".to_sym]
             halt 404 if file_path.nil?
 
+            case types[file] when :txt, :html
+              begin
+                Zlib::GzipReader.open(file_path)
+                headers['Content-Encoding'] = 'gzip'
+              rescue
+                puts "File not compressed: #{file_path}"
+              end
+            end
+
             send_file(file_path, type: types[file], disposition: :inline)
           end
 

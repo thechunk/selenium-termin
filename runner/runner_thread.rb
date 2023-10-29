@@ -197,7 +197,7 @@ module Termin
         ext = ".#{ext}" unless ext.empty?
 
         write_log_file(session_id, type, ext:) do |log_data_path|
-          File.open("#{log_data_path}/#{type.to_s}#{ext}", 'w', &blk)
+          Zlib::GzipWriter.open("#{log_data_path}/#{type.to_s}#{ext}", &blk)
         end
       end
     end
