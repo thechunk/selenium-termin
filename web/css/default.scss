@@ -12,7 +12,26 @@
 [data-theme=light],
 :root:not([data-theme=dark]) {
   --primary: #e40422;
+  --primary-hover: #000;
   --contrast: #000;
+}
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --primary: #e40422;
+    --primary-hover: #fff;
+    --primary-inverse: #000;
+    --contrast: #fff;
+    --contrast-hover: #fff;
+    --contrast-inverse: #000;
+  }
+}
+[data-theme=dark] {
+  --primary: #e40422;
+  --primary-hover: #fff;
+  --primary-inverse: #000;
+  --contrast: #fff;
+  --contrast-hover: #fff;
+  --contrast-inverse: #000;
 }
 
 iframe {
