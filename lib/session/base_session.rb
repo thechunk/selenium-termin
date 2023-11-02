@@ -118,7 +118,7 @@ module Termin
           prompt: true
         )
 
-        attempts = 3 * 60
+        attempts = 10 * 60
         until @notifier.prompt_waiting == false || attempts <= 0 do
           if attempts % 60 == 0
             @logger.debug("Waiting for user input...")
